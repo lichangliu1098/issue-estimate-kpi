@@ -20,14 +20,11 @@
     </thead>
     <tbody>
     <tr>
-        <td width="5%">
-            lichangliu_1
+        <td width="5%">lichangliu_1
         </td>
-        <td nowrap class="assignee">
-            project1
+        <td nowrap class="assignee">project1
         </td>
-        <td nowrap class="last-updated">
-            100
+        <td nowrap class="last-updated">100
         </td>
     </tr>
     <tr>
