@@ -3,10 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0a22379a-a83e-4c90-aa46-1b7210431e5e" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/issue-estimate-kpi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/issue-estimate-kpi.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/atlassian-plugin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/atlassian-plugin.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/issue-estimate-kpi.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/issue-estimate-kpi.properties" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -51,8 +47,8 @@
       <file leaf-file-name="issue-success.vm" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/templates/issue-estimate-kpi-module/issueestimatekpiaction/issue-success.vm">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="35" column="17" lean-forward="true" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="17" />
+            <state relative-caret-position="448">
+              <caret line="50" column="44" lean-forward="true" selection-start-line="50" selection-start-column="44" selection-end-line="50" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -289,10 +285,18 @@
       <updated>1533696564900</updated>
       <workItem from="1533696569289" duration="664000" />
     </task>
+    <task id="LOCAL-00001" summary="table one">
+      <created>1533699221780</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1533699221780</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1471000" />
+    <option name="totallyTimeSpent" value="1544000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -356,6 +360,10 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="table one" />
+    <option name="LAST_COMMIT_MESSAGE" value="table one" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/resources/atlassian-plugin.xml">
       <provider selected="true" editor-type-id="text-editor">
@@ -414,8 +422,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/templates/issue-estimate-kpi-module/issueestimatekpiaction/issue-success.vm">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="35" column="17" lean-forward="true" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="17" />
+        <state relative-caret-position="448">
+          <caret line="50" column="44" lean-forward="true" selection-start-line="50" selection-start-column="44" selection-end-line="50" selection-end-column="44" />
         </state>
       </provider>
     </entry>
