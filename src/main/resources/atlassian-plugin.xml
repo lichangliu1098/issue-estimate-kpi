@@ -1,24 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
-    <plugin-info>
-        <description>${project.description}</description>
-        <version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
-        <param name="plugin-icon">images/pluginIcon.png</param>
-        <param name="plugin-logo">images/pluginLogo.png</param>
-    </plugin-info>
-
-    <!-- add our i18n resource -->
-    <resource type="i18n" name="i18n" location="issue-estimate-kpi"/>
-    
-    <!-- add our web resources -->
-    <web-resource key="issue-estimate-kpi-resources" name="issue-estimate-kpi Web Resources">
-        <dependency>com.atlassian.auiplugin:ajs</dependency>
-        
-        <resource type="download" name="issue-estimate-kpi.css" location="/css/issue-estimate-kpi.css"/>
-        <resource type="download" name="issue-estimate-kpi.js" location="/js/issue-estimate-kpi.js"/>
-        <resource type="download" name="images/" location="/images"/>
-
-        <context>issue-estimate-kpi</context>
-    </web-resource>
-    
+  <plugin-info>
+    <description>${project.description}</description>
+    <version>${project.version}</version>
+    <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    <param name="plugin-icon">images/pluginIcon.png</param>
+    <param name="plugin-logo">images/pluginLogo.png</param>
+  </plugin-info>
+  <!-- add our i18n resource -->
+  <resource type="i18n" name="i18n" location="issue-estimate-kpi"/>
+  <!-- add our web resources -->
+  <web-resource key="issue-estimate-kpi-resources" name="issue-estimate-kpi Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <resource type="download" name="issue-estimate-kpi.css" location="/css/issue-estimate-kpi.css"/>
+    <resource type="download" name="issue-estimate-kpi.js" location="/js/issue-estimate-kpi.js"/>
+    <resource type="download" name="images/" location="/images"/>
+    <context>issue-estimate-kpi</context>
+  </web-resource>
+  <webwork1 key="issue-estimate-kpi-module" name="IssueEstimateKpiModule" i18n-name-key="issue-estimate-kpi-module.name">
+    <description key="issue-estimate-kpi-module.description">The IssueEstimateKpiModule Plugin</description>
+    <actions>
+      <action name="com.cbis.jira.webwork.IssueEstimateKpiAction" alias="IssueEstimateKpiAction">
+        <view name="issue-success">/templates/issue-estimate-kpi-module/issueestimatekpiaction/issue-success.vm</view>
+      </action>
+    </actions>
+  </webwork1>
 </atlassian-plugin>
