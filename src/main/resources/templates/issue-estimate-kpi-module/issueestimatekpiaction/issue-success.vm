@@ -3,25 +3,73 @@
     <meta name="decorator" content="atl.admin">
 </head>
 <body>
-<h1>issue-success.vm</h1>
-<table width="100%" class="aui" id="single_groupby_report_table">
-    <thead>
-    <tr>
-        <th>
-            <h2>用户名</h2>
-        </th>
-        <th>
-            <h2>项目名称</h2>
-        </th>
-        <th>
-            <h2>分数</h2>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
+<section class="aui-page-panel-content">
+    <form action="UserBrowser.jspa" class="aui top-label user-browser ajs-dirty-warning-exempt" id="user-filter" method="post">
+        <div class="form-body">
+            <div class="aui-group user-browser__filter-header">
+                <div class="aui-item">
+                    <div class="field-group">
+                        <label for="'userSearchFilter'">选择用户</label>
+                        <div class="user-browser__user-search">
+                            <input class="text
+    					full-width-field" id="user-filter-userSearchFilter" placeholder="姓名、用户名或电子邮件中包含的"
+                                   maxlength="255" name="userSearchFilter" type="text">
+                            <span class="aui-icon aui-icon-small aui-iconfont-search-small"></span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="aui-item">
+                    <div class="field-group">
+                        <label for="'userSearchFilter'">选择项目</label>
+                        <div class="user-browser__user-search">
+                            <input class="text
+    					full-width-field" id="user-filter-userSearchFilter" placeholder="姓名、用户名或电子邮件中包含的"
+                                   maxlength="255" name="userSearchFilter" type="text">
+                            <span class="aui-icon aui-icon-small aui-iconfont-search-small"></span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="aui-item user-browser__pagination">
+                    <div class="field-group">
+                        <label for="user-filter-usersPerPage">每页用户数</label>
+                        <select class="select short-field" id="user-filter-usersPerPage" name="max" type="text">
+                            <option value="1000000">全部</option>
+                            <option value="10">10</option>
+                            <option selected="selected" value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <table width="100%" class="aui" id="single_groupby_report_table">
+        <thead>
         <tr>
-            <td width="5%">
-                lichangliu_1
+            <th>
+                <h2>用户名</h2>
+            </th>
+            <th>
+                <h2>项目名称</h2>
+            </th>
+            <th>
+                <h2>分数</h2>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th colspan="6" class="stat-heading">
+                <div class="stat-progress">
+                </div>
+                <h3>lichangliu_1</h3>
+            </th>
+        </tr>
+        <tr>
+            <td width="30%">
             </td>
             <td nowrap class="assignee">
                 project1
@@ -31,8 +79,7 @@
             </td>
         </tr>
         <tr>
-            <td width="5%">
-                lichangliu_2
+            <td width="30%">
             </td>
             <td nowrap class="assignee">
                 project_2
@@ -42,8 +89,7 @@
             </td>
         </tr>
         <tr>
-            <td width="5%">
-                lichangliu_3
+            <td width="30%">
             </td>
             <td nowrap class="assignee">
                 project_3
@@ -52,6 +98,54 @@
                 100
             </td>
         </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <span class="subText">统计</span>
+            </td>
+            <td>
+                <span class="subText">999999</span>
+            </td>
+        </tr>
+        <tr>
+            <th colspan="6">
+                <div class="stat-progress">
+                </div>
+                <h3><span title="6666666">lichangliu_2</span></h3>
+            </th>
+        </tr>
+        <tr>
+            <td width="30%">
+            </td>
+            <td nowrap class="assignee">
+                project1
+            </td>
+            <td nowrap class="last-updated">
+                100
+            </td>
+        </tr>
+        <tr>
+            <td width="30%">
+            </td>
+            <td nowrap class="assignee">
+                project_2
+            </td>
+            <td nowrap class="last-updated">
+                100
+            </td>
+        </tr>
+        <tr>
+            <td width="30%">
+            </td>
+            <td nowrap class="assignee">
+                project_3
+            </td>
+            <td nowrap class="last-updated">
+                100
+            </td>
+        </tr>
+</section>
         #*#foreach ($user in $resultMap.entrySet())
             #set ($issues = $user.value)
             #set ($ key= $resultMap.get($user.key))
