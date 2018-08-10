@@ -13,6 +13,7 @@
   <!-- add our web resources -->
   <web-resource key="issue-estimate-kpi-resources" name="issue-estimate-kpi Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>com.atlassian.auiplugin:table</dependency>
     <resource type="download" name="batch.css" location="/css/batch.css"/>
     <resource type="download" name="issue-estimate-kpi.css" location="/css/issue-estimate-kpi.css"/>
     <resource type="download" name="issue-estimate-kpi.js" location="/js/issue-estimate-kpi.js"/>
@@ -27,4 +28,13 @@
       </action>
     </actions>
   </webwork1>
+  <web-section name="Issue Estimate Kpi Section" i18n-name-key="issue-estimate-kpi-section.name" key="issue-estimate-kpi-section" location="admin_plugins_menu" weight="1000">
+    <description key="issue-estimate-kpi-section.description">The Issue Estimate Kpi Section Plugin</description>
+    <label key="issue-estimate-kpi-section.label"/>
+  </web-section>
+  <web-item name="Issue Estimate Kpi Item" i18n-name-key="issue-estimate-kpi-item.name" key="issue-estimate-kpi-item" section="admin_plugins_menu/issue-estimate-kpi-section" weight="1000">
+    <description key="issue-estimate-kpi-item.description">The Issue Estimate Kpi Item Plugin</description>
+    <label key="issue-estimate-kpi-item.label"></label>
+    <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa</link>
+  </web-item>
 </atlassian-plugin>
