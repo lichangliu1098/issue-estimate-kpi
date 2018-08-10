@@ -28,21 +28,13 @@
 <div class="aui-group">
     <div class="aui-group aui-group-split count-pagination">
         <div class="aui-item">
-            <span class="results-count-text">
-                <span class="results-count-start">1</span>–<span class="results-count-end">50</span> 个问题，共 <span class="results-count-total results-count-link">26649</span> 个</span>
-            <a href="#" class="refresh-table" title="刷新结果">
-                <span class="aui-icon aui-icon-small aui-iconfont-refresh-small">刷新结果</span>
-            </a>
-        </div>
-        <div class="aui-item">
-            <div class="pagination" data-displayable-total="26649">
-                <strong title="问题 1 - 50">1</strong>
-                <a href="#" data-page="2" data-start-index="50" title="问题 51 - 100">2</a>
-                <a href="#" data-page="3" data-start-index="100" title="问题 101 - 150">3</a>
+            <div id="pageNumber" class="pagination">
             </div>
         </div>
     </div>
 </div>
+
+========$startAt=========
 <div id="issueTable" class="aui-group">
     <table class="aui">
         <thead>

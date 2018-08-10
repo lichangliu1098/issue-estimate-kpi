@@ -17,6 +17,7 @@
     <resource type="download" name="batch.css" location="/css/batch.css"/>
     <resource type="download" name="issue-estimate-kpi.css" location="/css/issue-estimate-kpi.css"/>
     <resource type="download" name="issue-estimate-kpi.js" location="/js/issue-estimate-kpi.js"/>
+    <resource type="download" name="issue-estimate-page.js" location="/js/issue-estimate-page.js"/>
     <resource type="download" name="images/" location="/images"/>
     <context>issue-estimate-kpi</context>
   </web-resource>

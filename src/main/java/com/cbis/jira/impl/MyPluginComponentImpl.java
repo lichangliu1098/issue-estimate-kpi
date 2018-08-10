@@ -3,6 +3,7 @@ package com.cbis.jira.impl;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.webresource.api.assembler.PageBuilderService;
 import com.cbis.jira.api.MyPluginComponent;
 
 import javax.inject.Inject;
@@ -14,6 +15,9 @@ public class MyPluginComponentImpl implements MyPluginComponent
 {
     @ComponentImport
     private final ApplicationProperties applicationProperties;
+
+    @ComponentImport
+    private  PageBuilderService pageBuilderService;
 
     @Inject
     public MyPluginComponentImpl(final ApplicationProperties applicationProperties)
