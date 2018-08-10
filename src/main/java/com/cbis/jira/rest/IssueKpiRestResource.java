@@ -107,21 +107,6 @@ public class IssueKpiRestResource {
     private String getHtml( Map<String,Map<String,Double>> map){
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<table width=\"100%\" class=\"aui\" id=\"single_groupby_report_table\">\n" +
-                "    <thead>\n" +
-                "    <tr>\n" +
-                "        <th>\n" +
-                "            <h2>用户名</h2>\n" +
-                "        </th>\n" +
-                "        <th>\n" +
-                "            <h2>项目名称</h2>\n" +
-                "        </th>\n" +
-                "        <th>\n" +
-                "            <h2>分数</h2>\n" +
-                "        </th>\n" +
-                "    </tr>\n" +
-                "    </thead>\n" +
-                "    <tbody>");
 
         for(String user : map.keySet()){
             Map<String,Double> tempMap = map.get(user);
@@ -137,7 +122,6 @@ public class IssueKpiRestResource {
                         "    </tr>");
             }
         }
-        buffer.append("</tbody></table>");
 
         return buffer.toString();
     }
