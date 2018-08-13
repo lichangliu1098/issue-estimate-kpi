@@ -1,6 +1,7 @@
 package com.cbis.jira.utils;
 
 import com.cbis.jira.bean.Assignee;
+import com.cbis.jira.bean.AssigneeTotal;
 import com.cbis.jira.bean.IssueObject;
 import com.cbis.jira.bean.Project;
 import com.google.gson.Gson;
@@ -24,7 +25,9 @@ public class JiraAPIUtil {
 //      JiraAPIUtil.searchIssues("assignee=username+order+by+duedate");  
 //      System.out.println("*****************************");
 
-        JiraAPIUtil.searchAllProjects();
+        AssigneeTotal assigneeTotal = JiraAPIUtil.findAssigneesByPicker(0,10);
+
+        System.out.println(assigneeTotal.getTotal());
     }
   
     static String uri = "https://jira.jiagouyun.com";
@@ -239,6 +242,10 @@ public class JiraAPIUtil {
         return new Gson().fromJson(searchAllAssignee(start,pageSize),new TypeToken<List<Assignee>>(){}.getType());
     }
 
+    public static AssigneeTotal findAssigneesByPicker(int start, int pageSize)throws IOException{
+        return new Gson().fromJson(searchAssigneeByPicker(start,pageSize),AssigneeTotal.class);
+    }
+
     /**
      * 查询jira中的所有用户
      * @return
@@ -248,6 +255,20 @@ public class JiraAPIUtil {
         String command = "curl -D- -u " + user + ":" + pwd
             + " -X GET -H \"Content-Type: application/json\" \"" + uri
             + "/rest/api/2/user/search?username=.&startAt="+startPage+"&maxResults="+pageSize+"\"";
+
+        String resultJson = executeShell(command);
+        return resultJson;
+    }
+
+    /**
+     * 查询jira中的所有用户
+     * @return
+     * @throws IOException
+     */
+    public static String searchAssigneeByPicker(int startPage,int pageSize)throws IOException{
+        String command = "curl -D- -u " + user + ":" + pwd
+                + " -X GET -H \"Content-Type: application/json\" \"" + uri
+                + "/rest/api/2/user/picker?query=.&startAt="+startPage+"&maxResults="+pageSize+"\"";
 
         String resultJson = executeShell(command);
         return resultJson;

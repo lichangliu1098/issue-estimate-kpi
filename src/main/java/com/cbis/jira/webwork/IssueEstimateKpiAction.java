@@ -15,6 +15,10 @@ public class IssueEstimateKpiAction extends JiraWebActionSupport
     @Inject
     private PageBuilderService pageBuilderService;
 
+    private String startAt;
+
+    private String currentPage;
+
     @Override
     public String execute() throws Exception {
 
@@ -30,5 +34,21 @@ public class IssueEstimateKpiAction extends JiraWebActionSupport
 
     public void setPageBuilderService(PageBuilderService pageBuilderService) {
         this.pageBuilderService = pageBuilderService;
+    }
+
+    public String getStartAt() {
+        return startAt;
+    }
+
+    public void setStartAt(String startAt) {
+        this.startAt = startAt;
+    }
+
+    public String getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(String currentPage) {
+        this.currentPage = currentPage;
     }
 }

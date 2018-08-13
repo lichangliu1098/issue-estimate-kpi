@@ -16,6 +16,7 @@
     <dependency>com.atlassian.auiplugin:aui-spinner</dependency>
     <resource type="download" name="issue-estimate-kpi.css" location="/css/issue-estimate-kpi.css"/>
     <resource type="download" name="issue-estimate-kpi.js" location="/js/issue-estimate-kpi.js"/>
+    <resource type="download" name="issue-estimate-page.js" location="/js/issue-estimate-page.js"/>
     <resource type="download" name="images/" location="/images"/>
     <context>issue-estimate-kpi</context>
   </web-resource>
@@ -34,7 +35,7 @@
   <web-item name="Issue Estimate Kpi Item" i18n-name-key="issue-estimate-kpi-item.name" key="issue-estimate-kpi-item" section="admin_plugins_menu/issue-estimate-kpi-section" weight="1000">
     <description key="issue-estimate-kpi-item.description">The Issue Estimate Kpi Item Plugin</description>
     <label key="issue-estimate-kpi-item.label"/>
-    <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa</link>
+    <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa?startAt=0&amp;currentPage=1</link>
   </web-item>
   <rest name="Issue Kpi Rest Resource" i18n-name-key="issue-kpi-rest-resource.name" key="issue-kpi-rest-resource" path="/issueApi" version="1.0">
     <description key="issue-kpi-rest-resource.description">The Issue Kpi Rest Resource Plugin</description>

@@ -9,11 +9,15 @@ public class IssueKpiRestResourceModel {
     @XmlElement
     private String message;
 
+    @XmlElement
+    private String total;
+
     public IssueKpiRestResourceModel() {
     }
 
-    public IssueKpiRestResourceModel(String message) {
+    public IssueKpiRestResourceModel(String message,String total) {
         this.message = message;
+        this.total = total;
     }
 
     public String getMessage() {
@@ -22,5 +26,13 @@ public class IssueKpiRestResourceModel {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total;
     }
 }

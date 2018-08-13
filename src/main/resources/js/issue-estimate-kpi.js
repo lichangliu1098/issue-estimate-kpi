@@ -1,15 +1,19 @@
-var initUserSearch = function() {
+var initUserSearch = function(startAt,currentPage,pageSize) {
     AJS.log('initUserSearch beging ...');
 
     createLoading(AJS.$("#issueTable"));
     AJS.$.ajax({
-        url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/allProject?query=111",
+        url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/allProject?startAt="+startAt+"&maxResults="+pageSize,
         type: "GET",
         dataType: "json",
         success: function(msg){
             console.log("api is success====:data:"+msg);
             removeLoading(AJS.$("#issueTable"));
             AJS.$("#issueTable").find("tbody").empty().append(msg.message)
+
+            var total = msg.total;
+            console.log("data:[total=]"+total);
+            createPage(currentPage,pageSize,total);
         }
     });
 };
@@ -29,5 +33,5 @@ var removeLoading = function(obj){
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     var baseUrl = AJS.params.baseURL;
-    initUserSearch();
+    initUserSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val(),5);
 });

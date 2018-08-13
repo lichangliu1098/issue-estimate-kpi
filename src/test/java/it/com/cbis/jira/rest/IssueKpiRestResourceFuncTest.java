@@ -58,7 +58,6 @@ public class IssueKpiRestResourceFuncTest {
         Resource resource = client.resource(url);
         return resource
                 .header("Accept", "application/json;q=1.0")
-
                 .get()
                 .getEntity(String.class);
     }
