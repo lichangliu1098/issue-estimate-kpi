@@ -12,7 +12,7 @@ var createPage = function(currentPage,pageSize,total){
             if(i==currentPage){
                 item += " <strong>"+i+"</strong>";
             }else{
-                item += "<a href=\"\IssueEstimateKpiAction?startAt="+(pageSize*(i-1))+"\" data-page=\""+i+"\" data-start-index=\""+(pageSize*(i-1))+"\">"+i+"</a>";
+                item += "<a href=\"\IssueEstimateKpiAction.jspa?startAt="+(pageSize*(i-1))+"&currentPage="+i+"\" data-page=\""+i+"\" data-start-index=\""+(pageSize*(i-1))+"\">"+i+"</a>";
             }
         }
         AJS.$("#pageNumber").append(item);

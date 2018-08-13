@@ -28,13 +28,14 @@
 <div class="aui-group">
     <div class="aui-group aui-group-split count-pagination">
         <div class="aui-item">
+            <input id="startAt" type="hidden" value="$startAt">
+            <input id="currentPage" type="hidden" value="$currentPage">
             <div id="pageNumber" class="pagination">
+
             </div>
         </div>
     </div>
 </div>
-
-========$startAt=========
 <div id="issueTable" class="aui-group">
     <table class="aui">
         <thead>

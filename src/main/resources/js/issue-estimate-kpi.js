@@ -1,9 +1,8 @@
-var initUserSearch = function() {
-    AJS.log('initUserSearch beging ...');
-    var startAt = AJS.$("#");
+var initUserSearch = function(startAt,currentPage) {
+    AJS.log('initUserSearch beging .....startAt=['+startAt+']');
     //createLoading(AJS.$("#issueTable"));
     AJS.$.ajax({
-        url: AJS.params.baseURL + "/rest/api/2/search?jql=assignee=admin&maxResults=-1&fields=id",
+        url: AJS.params.baseURL + "/rest/api/2/search?jql=assignee=admin&startAt="+startAt+"&maxResults=-1&fields=id",
         type: "GET",
         dataType: "json",
         success: function(msg){
@@ -13,7 +12,7 @@ var initUserSearch = function() {
             var total = msg.total;
 
             console.log("data:[startAt=]"+startAt+"[total=]"+total);
-            createPage((startAt+1),null,total);
+            createPage(currentPage,5,total);
             //AJS.$("#issueTable").find("tbody").empty().append(msg.message)
         }
     });
@@ -34,5 +33,5 @@ var removeLoading = function(obj){
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     var baseUrl = AJS.params.baseURL;
-    initUserSearch();
+    initUserSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val());
 });

@@ -17,6 +17,8 @@ public class IssueEstimateKpiAction extends JiraWebActionSupport
 
     private String startAt;
 
+    private String currentPage;
+
     public IssueEstimateKpiAction(){
 
     }
@@ -44,5 +46,13 @@ public class IssueEstimateKpiAction extends JiraWebActionSupport
 
     public void setStartAt(String startAt) {
         this.startAt = startAt;
+    }
+
+    public String getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(String currentPage) {
+        this.currentPage = currentPage;
     }
 }

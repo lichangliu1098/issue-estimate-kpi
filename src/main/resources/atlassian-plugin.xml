@@ -36,6 +36,6 @@
   <web-item name="Issue Estimate Kpi Item" i18n-name-key="issue-estimate-kpi-item.name" key="issue-estimate-kpi-item" section="admin_plugins_menu/issue-estimate-kpi-section" weight="1000">
     <description key="issue-estimate-kpi-item.description">The Issue Estimate Kpi Item Plugin</description>
     <label key="issue-estimate-kpi-item.label"></label>
-    <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa</link>
+    <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa?startAt=0&amp;currentPage=1</link>
   </web-item>
 </atlassian-plugin>
