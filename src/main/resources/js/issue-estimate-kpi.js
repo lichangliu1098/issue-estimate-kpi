@@ -1,8 +1,8 @@
-var initUserSearch = function(startAt,currentPage) {
+var initUserSearch = function(startAt,currentPage,pageSize) {
     AJS.log('initUserSearch beging .....startAt=['+startAt+']');
     //createLoading(AJS.$("#issueTable"));
     AJS.$.ajax({
-        url: AJS.params.baseURL + "/rest/api/2/search?jql=assignee=admin&startAt="+startAt+"&maxResults=-1&fields=id",
+        url: AJS.params.baseURL + "/rest/api/2/search?jql=assignee=admin&startAt="+startAt+"&fields=id",
         type: "GET",
         dataType: "json",
         success: function(msg){
@@ -12,7 +12,7 @@ var initUserSearch = function(startAt,currentPage) {
             var total = msg.total;
 
             console.log("data:[startAt=]"+startAt+"[total=]"+total);
-            createPage(currentPage,5,total);
+            createPage(currentPage,5,212);
             //AJS.$("#issueTable").find("tbody").empty().append(msg.message)
         }
     });
