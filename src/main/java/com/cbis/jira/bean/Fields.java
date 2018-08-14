@@ -30,6 +30,8 @@ public class Fields {
 
     private Assignee reporter;
 
+    private Assignee assignee;
+
     public IssueType getIssueType() {
         return issueType;
     }
@@ -140,5 +142,13 @@ public class Fields {
 
     public void setReporter(Assignee reporter) {
         this.reporter = reporter;
+    }
+
+    public Assignee getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(Assignee assignee) {
+        this.assignee = assignee;
     }
 }

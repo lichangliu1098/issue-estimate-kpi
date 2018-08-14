@@ -27,7 +27,7 @@ public class IssueKpiRestResourceTest {
     public void messageIsValid() {
         IssueKpiRestResource resource = new IssueKpiRestResource();
 
-        Response response = resource.searchProjects(0,1,null);
+        Response response = resource.allUserKpi(0,1,null);
         final IssueKpiRestResourceModel message = (IssueKpiRestResourceModel) response.getEntity();
 
         assertEquals("wrong message",message.getMessage(),message.getMessage());

@@ -13,10 +13,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A resource of message.
@@ -29,6 +26,9 @@ public class IssueKpiRestResource {
 
     private static final String TOTAL_SCORE_SIGN = "total_";
 
+    //查询结果过滤条件
+    private static final String FIlTER_FIELDS = "+order+by+assignee&fields=project,assignee,customfield_10909,customfield_10910";
+
     public IssueKpiRestResource(){}
 
     @GET
@@ -40,20 +40,98 @@ public class IssueKpiRestResource {
     }
 
     @GET
-    @Path("/allProject")
+    @Path("/allUserKpi")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response searchProjects(@QueryParam("startAt") final int startAt,
+    public Response allUserKpi(@QueryParam("startAt") final int startAt,
                                    @QueryParam("maxResults") final int maxResults,
                                    @Context HttpServletRequest request) {
 
-        IssueKpiRestResourceModel model = findProjects(startAt,maxResults);
+        IssueKpiRestResourceModel model = allUserKpi(startAt,maxResults);
         return Response.ok(model).build();
     }
 
-    private IssueKpiRestResourceModel findProjects(int startAt,int maxResults) {
+    @GET
+    @Path("/searchKpi")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response searchKpi(@QueryParam("jql") final String jql,
+                                   @QueryParam("startAt") final int startAt,
+                                   @QueryParam("maxResults") final int maxResults,
+                                   @Context HttpServletRequest request) {
+
+        IssueKpiRestResourceModel model = findSerachKpi(jql,startAt,maxResults);
+        return Response.ok(model).build();
+    }
+
+    private IssueKpiRestResourceModel findSerachKpi(String jql,int startAt,int maxResults) {
 
         IssueKpiRestResourceModel model = new IssueKpiRestResourceModel();
-        log.info("begin to search project============================");
+        log.info("begin to search kpi ============================");
+        try{
+
+            IssueObject issueObject = JiraAPIUtil.findIssues(jql+FIlTER_FIELDS);
+            int total = issueObject.getTotal();
+
+            HashSet<String> userSet = new HashSet<>();//放用户，用来分页
+            Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String, Double>>();//每个用户所有的项目分数
+            Map<String, Double> estimateMap = new HashMap<String, Double>();//每个项目分数
+            Map<String,String> assigneeMap = new HashMap<>();//用户名
+            Map<String,String> projectMap = new HashMap<>();//项目名
+            Map<String,Double> totalScoreMap = new HashMap<>();//统计总分
+
+            List<Issue> issueList = issueObject.getIssues();
+            Assignee assignee = null;
+            Project project = null;
+            Double estimate = null;
+            for(int i=0;i<issueList.size();i++) {
+                Issue issue = issueList.get(i);
+                if(!userSet.contains(issue.getKey())){//获取用户总数
+                    userSet.add(issue.getKey());
+                }
+                if(userSet.size()>=startAt&&resultMap.size()<=maxResults){//分页
+                    assignee = issue.getFields().getAssignee();
+                    project = issue.getFields().getProject();
+                    estimate = issue.getFields().getCustomfield_10910();
+                    if(!assigneeMap.containsKey(assignee.getKey())){//把用户名称放入map
+                        assigneeMap.put(assignee.getKey(),assignee.getDisplayName());
+                    }
+                    if(!projectMap.containsKey(project.getKey())){//把项目名称放入map
+                        projectMap.put(project.getKey(),project.getName());
+                    }
+                    //第一层map
+                    if(estimateMap.containsKey(project.getKey())){
+                        Double temp = estimateMap.get(project.getKey());
+                        estimate += temp;
+                        estimateMap.put(project.getKey(),estimate);
+                        totalScoreMap.put(TOTAL_SCORE_SIGN+assignee.getKey(),estimate);
+                    }else{
+                        estimateMap.put(project.getKey(),estimate);
+                        totalScoreMap.put(TOTAL_SCORE_SIGN+assignee.getKey(),estimate);
+                    }
+                    //第二层map
+                    if(resultMap.containsKey(assignee.getKey())){
+                        Map<String, Double> tempMap = resultMap.get(assignee.getKey());
+                        estimateMap.putAll(tempMap);
+                        resultMap.put(assignee.getKey(),estimateMap);
+                    }else{
+                        resultMap.put(assignee.getKey(),estimateMap);
+                    }
+                }
+            }
+
+            String html = getHtml(resultMap,assigneeMap,projectMap,totalScoreMap);
+            model.setMessage(html);
+            model.setTotal(String.valueOf(userSet.size()));
+        }catch (Exception e){
+            log.error("search kpi error:"+e.getMessage());
+        }
+        return model;
+    }
+
+
+    private IssueKpiRestResourceModel allUserKpi(int startAt,int maxResults) {
+
+        IssueKpiRestResourceModel model = new IssueKpiRestResourceModel();
+        log.info("begin to search allUserKpi============================");
         try{
             AssigneeTotal assigneeTotal = JiraAPIUtil.findAssigneesByPicker(0,1);//为了获取用户总人数
             List<Assignee> userList = JiraAPIUtil.findAssignees(startAt,maxResults);
@@ -64,7 +142,7 @@ public class IssueKpiRestResource {
             model.setMessage(html);
             model.setTotal(assigneeTotal.getTotal());
         }catch (Exception e){
-            log.error("search project error:"+e.getMessage());
+            log.error("search allUserKpi error:"+e.getMessage());
         }
         return model;
     }
