@@ -84,8 +84,8 @@ public class IssueKpiRestResource {
             Double estimate = null;
             for(int i=0;i<issueList.size();i++) {
                 Issue issue = issueList.get(i);
-                if(!userSet.contains(issue.getKey())){//获取用户总数
-                    userSet.add(issue.getKey());
+                if(!userSet.contains(issue.getFields().getAssignee().getKey())){//获取用户总数
+                    userSet.add(issue.getFields().getAssignee().getKey());
                 }
                 if(userSet.size()>=startAt&&resultMap.size()<=maxResults){//分页
                     assignee = issue.getFields().getAssignee();

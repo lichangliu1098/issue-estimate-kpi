@@ -18,9 +18,8 @@ var initSearch = function(startAt,currentPage,pageSize) {
     });
 };
 
-var conditionSearch =  function(AJS.$("#startAt").val(),AJS.$("#currentPage").val(),5){
+var conditionSearch =  function(jql,startAt,currentPage,pageSize){
     AJS.log('conditionSearch beging ...');
-    var jql = "";
     createLoading(AJS.$("#issueTable"));
     AJS.$.ajax({
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi?jql="+jql+"&startAt="+startAt+"&maxResults="+pageSize,
@@ -54,4 +53,9 @@ AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     var baseUrl = AJS.params.baseURL;
     initSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val(),5);
+
+    AJS.$("#searchButton").click(function(){
+        console.log("click successs");
+        conditionSearch("assignee=lichangliu",0,1,5);
+    })
 });

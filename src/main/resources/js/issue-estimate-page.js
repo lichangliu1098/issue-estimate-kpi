@@ -1,5 +1,6 @@
 var createPage = function(currentPage,pageSize,total){
 
+    AJS.$("#pageNumber").empty();
     if(pageSize==null || pageSize == undefined){
         pageSize = 5;
     }
