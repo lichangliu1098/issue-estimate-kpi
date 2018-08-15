@@ -1,5 +1,6 @@
-var createPage = function(currentPage,pageSize,total){
+var createPage = function(currentPage,pageSize,total,funcName){
 
+    AJS.$("#pageNumber").empty();
     if(pageSize==null || pageSize == undefined){
         pageSize = 5;
     }
@@ -16,7 +17,8 @@ var createPage = function(currentPage,pageSize,total){
             if(i==currentPage){
                 item += " <strong>"+i+"</strong>";
             }else{
-                item += "<a href=\"\IssueEstimateKpiAction.jspa?startAt="+(pageSize*(i-1))+"&currentPage="+i+"\" data-page=\""+i+"\" data-start-index=\""+(pageSize*(i-1))+"\">"+i+"</a>";
+                item += "<a href=\"#\" " +
+                    "onclick='"+funcName+"("+(pageSize*(i-1))+","+i+","+pageSize+")' data-page=\""+i+"\" data-start-index=\""+(pageSize*(i-1))+"\">"+i+"</a>";
             }
         }
         AJS.$("#pageNumber").append(item);
@@ -70,4 +72,5 @@ var createPage = function(currentPage,pageSize,total){
             AJS.$("#pageNumber").append(item);
         }
     }
+    AJS.$("#total").html(total);
 };

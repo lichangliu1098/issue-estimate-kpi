@@ -16,38 +16,15 @@
                 <button id="searchButton" class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
                     <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
                 </button>
-                #*<span class="aui-icon aui-icon-small aui-iconfont-search-small"></span>*#
             </div>
         </div>
     </div>
-    #*<div class="aui-item">
-        <div class="search-options-container">
-            <div>
-                <button class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
-                    <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
-                </button>
-            </div>
-        </div>
-    </div>*#
-    #*<div class="aui-item search-wrap">
-        <div class="search-container" data-mode="advanced">
-            <div class="search-field-container">
-                <div class="atlassian-autocomplete">
-                    <textarea id="advanced-search" class="search-entry advanced-search ajs-dirty-warning-exempt" name="jql" style="overflow: hidden; height: 33px;" autocomplete="off"></textarea>
-                </div>
-            </div>
-            <div class="search-options-container">
-                <div>
-                    <button class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
-                        <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>*#
 </div>
 <div class="aui-group">
     <div class="aui-group aui-group-split count-pagination">
+        <div class="results-count aui-item">
+            共 <span class="results-count-total" id="total"></span>个。
+        </div>
         <div class="aui-item">
             <input id="startAt" type="hidden" value="$startAt">
             <input id="currentPage" type="hidden" value="$currentPage">

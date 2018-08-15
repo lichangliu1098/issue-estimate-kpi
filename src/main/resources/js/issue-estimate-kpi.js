@@ -12,13 +12,31 @@ var initUserSearch = function(startAt,currentPage,pageSize) {
             var total = msg.total;
 
             console.log("data:[startAt=]"+startAt+"[total=]"+total);
-            createPage(currentPage,5,212);
+            createPage(currentPage,pageSize,total,"initUserSearch");
             //AJS.$("#issueTable").find("tbody").empty().append(msg.message)
         }
     });
 };
 
+var conditionSearch =  function(startAt,currentPage,pageSize){
+    AJS.log('conditionSearch beging ...');
+    var jql="assignee=lichangliu";
+    createLoading(AJS.$("#issueTable"));
+    AJS.$.ajax({
+        url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi?jql="+jql+"&startAt="+startAt+"&maxResults="+pageSize,
+        type: "GET",
+        dataType: "json",
+        success: function(msg){
+            console.log("api is success====:data:"+msg);
+            removeLoading(AJS.$("#issueTable"));
+            AJS.$("#issueTable").find("tbody").empty().append(msg.message)
 
+            var total = msg.total;
+            console.log("data:[total=]"+total);
+            createPage(currentPage,pageSize,total);
+        }
+    });
+}
 
 var createLoading = function(obj){
     var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
@@ -34,9 +52,10 @@ var removeLoading = function(obj){
 
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
-    //initUserSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val());
+    initUserSearch(0,1,1);
 
-    AJS.$("#searchButton").click(function(){
+    /*AJS.$("#searchButton").click(function(){
         console.log("click successs");
-    })
+        conditionSearch(startAt,currentPage,pageSize);
+    })*/
 });
