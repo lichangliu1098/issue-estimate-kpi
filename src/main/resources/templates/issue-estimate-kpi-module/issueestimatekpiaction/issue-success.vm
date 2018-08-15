@@ -8,7 +8,28 @@
 <body>
 
 <div class="aui-group">
-    <div class="aui-item search-wrap">
+    <div class="aui-item">
+        <div class="field-group">
+            <label for="'userSearchFilter'">用户筛选</label>
+            <div class="user-browser__user-search">
+                <input class="text full-width-field" style="width: 50%;height:25px" id="user-filter-userSearchFilter" placeholder="姓名、用户名或电子邮件中包含的" maxlength="255" name="userSearchFilter" type="text">
+                <button id="searchButton" class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
+                    <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
+                </button>
+                #*<span class="aui-icon aui-icon-small aui-iconfont-search-small"></span>*#
+            </div>
+        </div>
+    </div>
+    #*<div class="aui-item">
+        <div class="search-options-container">
+            <div>
+                <button class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
+                    <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
+                </button>
+            </div>
+        </div>
+    </div>*#
+    #*<div class="aui-item search-wrap">
         <div class="search-container" data-mode="advanced">
             <div class="search-field-container">
                 <div class="atlassian-autocomplete">
@@ -23,7 +44,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*#
 </div>
 <div class="aui-group">
     <div class="aui-group aui-group-split count-pagination">
@@ -37,34 +58,42 @@
     </div>
 </div>
 <div id="issueTable" class="aui-group">
-    <table class="aui">
+    <table width="100%" class="aui" id="single_groupby_report_table">
         <thead>
         <tr>
-            <th id="basic-number">#</th>
-            <th id="basic-fname">First name</th>
-            <th id="basic-lname">Last name</th>
-            <th id="basic-username">Username</th>
+            <th>
+                <h2>用户名</h2>
+            </th>
+            <th>
+                <h2>关键字</h2>
+            </th>
+            <th>
+                <h2>项目名称</h2>
+            </th>
+            <th>
+                <h2>分数</h2>
+            </th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td headers="basic-number">1</td>
-            <td headers="basic-fname">Matt</td>
-            <td headers="basic-lname">Bond</td>
-            <td headers="basic-username">mbond</td>
-        </tr>
-        <tr>
-            <td headers="basic-number">2</td>
-            <td headers="basic-fname">Ross</td>
-            <td headers="basic-lname">Chaldecott</td>
-            <td headers="basic-username">rchaldecott</td>
-        </tr>
-        <tr>
-            <td headers="basic-number">3</td>
-            <td headers="basic-fname">Henry</td>
-            <td headers="basic-lname">Tapia</td>
-            <td headers="basic-username">htapia</td>
-        </tr>
+            <tr>
+                <td headers="basic-fname">Matt</td>
+                <td headers="basic-lname">Bond</td>
+                <td headers="basic-username">mbond</td>
+                <td headers="basic-number">1</td>
+            </tr>
+            <tr>
+                <td headers="basic-fname">Ross</td>
+                <td headers="basic-lname">Chaldecott</td>
+                <td headers="basic-username">rchaldecott</td>
+                <td headers="basic-number">2</td>
+            </tr>
+            <tr>
+                <td headers="basic-fname">Henry</td>
+                <td headers="basic-lname">Tapia</td>
+                <td headers="basic-username">htapia</td>
+                <td headers="basic-number">3</td>
+            </tr>
         </tbody>
     </table>
 </div>

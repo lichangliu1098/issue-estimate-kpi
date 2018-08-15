@@ -18,6 +18,8 @@ var initUserSearch = function(startAt,currentPage,pageSize) {
     });
 };
 
+
+
 var createLoading = function(obj){
     var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
         "            <p>Loading...</p>\n" +
@@ -32,6 +34,9 @@ var removeLoading = function(obj){
 
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
-    var baseUrl = AJS.params.baseURL;
-    initUserSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val());
+    //initUserSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val());
+
+    AJS.$("#searchButton").click(function(){
+        console.log("click successs");
+    })
 });
