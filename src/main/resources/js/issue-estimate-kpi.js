@@ -13,13 +13,26 @@ var initSearch = function(startAt,currentPage,pageSize) {
 
             var total = msg.total;
             console.log("data:[total=]"+total);
-            createPage(currentPage,pageSize,total);
+            createPage(currentPage,pageSize,total,"initSearch");
         }
     });
 };
 
-var conditionSearch =  function(jql,startAt,currentPage,pageSize){
+var isEmpty = function(obj){
+    var flag = false;
+    if(obj == null || obj == undefined || obj == ""){
+        flag = true;
+    }
+    return flag;
+};
+
+var conditionSearch =  function(startAt,currentPage,pageSize){
     AJS.log('conditionSearch beging ...');
+    var jql = AJS.$("#userSearchFilter").val().replace(/^\s+|\s+$/g,"");
+    if(isEmpty(jql)){//查询所有
+        initSearch(0,1,pageSize);
+        return;
+    }
     createLoading(AJS.$("#issueTable"));
     AJS.$.ajax({
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi?jql="+jql+"&startAt="+startAt+"&maxResults="+pageSize,
@@ -32,10 +45,10 @@ var conditionSearch =  function(jql,startAt,currentPage,pageSize){
 
             var total = msg.total;
             console.log("data:[total=]"+total);
-            createPage(currentPage,pageSize,total);
+            createPage(currentPage,pageSize,total,"conditionSearch");
         }
     });
-}
+};
 
 var createLoading = function(obj){
     var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
@@ -52,10 +65,10 @@ var removeLoading = function(obj){
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     var baseUrl = AJS.params.baseURL;
-    initSearch(AJS.$("#startAt").val(),AJS.$("#currentPage").val(),5);
+    initSearch(0,1,5);
 
     AJS.$("#searchButton").click(function(){
         console.log("click successs");
-        conditionSearch("assignee=lichangliu",0,1,5);
+        conditionSearch(0,1,5);
     })
 });
