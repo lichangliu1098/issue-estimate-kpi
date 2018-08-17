@@ -38,6 +38,19 @@ var conditionSearch =  function(startAt,currentPage,pageSize){
     });
 }
 
+var dropDown = function (obj) {
+    var status = AJS.$(obj).find("span").attr("status");
+    if(status=="down"){
+        AJS.$(obj).parent("tr").siblings().show();
+        AJS.$(obj).find("span").attr("status","up");
+        AJS.$(obj).find("span").removeClass("aui-iconfont-arrows-down").addClass("aui-iconfont-arrows-up");
+    }else{
+        AJS.$(obj).parent("tr").siblings().hide();
+        AJS.$(obj).find("span").attr("status","down");
+        AJS.$(obj).find("span").removeClass("aui-iconfont-arrows-up").addClass("aui-iconfont-arrows-down");
+    }
+}
+
 var createLoading = function(obj){
     var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
         "            <p>Loading...</p>\n" +
@@ -52,8 +65,11 @@ var removeLoading = function(obj){
 
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
-    initUserSearch(0,1,1);
+    //initUserSearch(0,1,1);
 
+    AJS.$("#show_hide_button").click(function (){
+        dropDown(this);
+    });
     /*AJS.$("#searchButton").click(function(){
         console.log("click successs");
         conditionSearch(startAt,currentPage,pageSize);

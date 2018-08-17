@@ -6,7 +6,6 @@
     </script>
 </head>
 <body>
-
 <div class="aui-group">
     <div class="aui-item">
         <div class="field-group">
@@ -38,38 +37,36 @@
     <table width="100%" class="aui" id="single_groupby_report_table">
         <thead>
         <tr>
-            <th>
-                <h2>用户名</h2>
-            </th>
-            <th>
-                <h2>关键字</h2>
-            </th>
-            <th>
-                <h2>项目名称</h2>
-            </th>
-            <th>
-                <h2>分数</h2>
-            </th>
+            <th id="basic-number">#</th>
+            <th id="basic-fname">用户名</th>
+            <th id="basic-lname">关键字</th>
+            <th id="basic-username">项目名称</th>
+            <th id="basic-username">分数</th>
         </tr>
         </thead>
         <tbody>
             <tr>
-                <td headers="basic-fname">Matt</td>
-                <td headers="basic-lname">Bond</td>
-                <td headers="basic-username">mbond</td>
-                <td headers="basic-number">1</td>
+                <td width="5%" headers="basic-fname" id="show_hide_button">
+                    <span class="aui-icon aui-icon-small aui-iconfont-arrows-down" status="down">Insert meaningful text here for accessibility</span>
+                </td>
+                <td width="25%" headers="basic-fname">Matt</td>
+                <td width="25%" headers="basic-lname">Bond</td>
+                <td width="25%" headers="basic-username">mbond</td>
+                <td width="20%" headers="basic-number">1</td>
             </tr>
-            <tr>
-                <td headers="basic-fname">Ross</td>
-                <td headers="basic-lname">Chaldecott</td>
-                <td headers="basic-username">rchaldecott</td>
-                <td headers="basic-number">2</td>
+            <tr class="Matt" style="display:none">
+                <td width="5%"></td>
+                <td width="25%"></td>
+                <td width="25%" headers="basic-lname">Chaldecott</td>
+                <td width="25%" headers="basic-username">rchaldecott</td>
+                <td width="20%" headers="basic-number">2</td>
             </tr>
-            <tr>
-                <td headers="basic-fname">Henry</td>
-                <td headers="basic-lname">Tapia</td>
-                <td headers="basic-username">htapia</td>
-                <td headers="basic-number">3</td>
+            <tr class="Matt" style="display:none">
+                <td width="5%"></td>
+                <td width="25%"></td>
+                <td width="25%" headers="basic-lname">Tapia</td>
+                <td width="25%" headers="basic-username">htapia</td>
+                <td width="20%" headers="basic-number">3</td>
             </tr>
         </tbody>
     </table>

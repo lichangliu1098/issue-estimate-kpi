@@ -21,6 +21,13 @@
     <resource type="download" name="images/" location="/images"/>
     <context>issue-estimate-kpi</context>
   </web-resource>
+  <web-resource key="issue-estimate-kpi-icon-resources" name="issue-estimate-kpi icon Web Resources">
+    <dependency>com.atlassian.auiplugin:ajs</dependency>
+    <dependency>com.atlassian.auiplugin:aui-experimental-iconfont</dependency>
+    <resource type="download" name="issue-estimate-kpi-icon.css" location="/css/issue-estimate-kpi-icon.css"/>
+    <resource type="download" name="issue-estimate-kpi-icon.js" location="/js/issue-estimate-kpi-icon.js"/>
+    <context>issue-estimate-kpi</context>
+  </web-resource>
   <webwork1 key="issue-estimate-kpi-module" name="IssueEstimateKpiModule" i18n-name-key="issue-estimate-kpi-module.name">
     <description key="issue-estimate-kpi-module.description">The IssueEstimateKpiModule Plugin</description>
     <actions>

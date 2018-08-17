@@ -1,5 +1,6 @@
 package com.cbis.jira.webwork;
 
+import com.atlassian.jira.plugin.webresource.JiraWebResourceManager;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.webresource.api.assembler.PageBuilderService;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public class IssueEstimateKpiAction extends JiraWebActionSupport
     public String execute() throws Exception {
         pageBuilderService.assembler().resources().requireWebResource(
                 "com.cbis.jira.issue-estimate-kpi:issue-estimate-kpi-resources"
-        );
+        ).requireWebResource("com.cbis.jira.issue-estimate-kpi:issue-estimate-kpi-icon-resources");
 
         return "issue-success"; //returns SUCCESS
     }
