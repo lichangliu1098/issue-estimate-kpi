@@ -200,42 +200,63 @@ public class IssueKpiRestResource {
 
         for(String user : map.keySet()){
             Map<String,Double> tempMap = map.get(user);
+                buffer.append("<tr id=\""+user+"\">\n" +
+                        "        <td width=\"5%\" class=\"show_hide_button\" nowrap class=\"assignee\"><span class=\"aui-icon aui-icon-small aui-iconfont-arrows-down\" status=\"down\">icons</span>\n" +
+                        "        </td>\n" +
+                        "        <td width=\"25%\" nowrap class=\"assignee\">"+assigneeMap.get(user)+"\n" +
+                        "        </td>\n" +
+                        "        <td width=\"25%\" nowrap class=\"assignee\">"+user+"\n" +
+                        "        </td>\n" +
+                        "        <td width=\"25%\" nowrap class=\"assignee\">总分\n" +
+                        "        </td>\n" +
+                        "        <td width=\"20%\" nowrap class=\"last-updated\">"+totalScoreMap.get(TOTAL_SCORE_SIGN+user)+"\n" +
+                        "        </td>\n" +
+                        "    </tr>");
             if(tempMap.size()!=0){
                 for(String project:tempMap.keySet()){
                     Double estimate = tempMap.get(project);
-                        buffer.append("<tr>\n" +
-                                "        <td nowrap class=\"assignee\">"+assigneeMap.get(user)+"\n" +
+                        buffer.append("<tr class=\""+user+"\" style=\"display:none\">\n" +
+                                "        <td width=\"5%\" nowrap class=\"assignee\">\n" +
                                 "        </td>\n" +
-                                "        <td nowrap class=\"assignee\">"+project+"\n" +
+                                "        <td width=\"25%\" nowrap class=\"assignee\">\n" +
                                 "        </td>\n" +
-                                "        <td nowrap class=\"assignee\">"+projectMap.get(project)+"\n" +
+                                "        <td width=\"25%\" nowrap class=\"assignee\">"+project+"\n" +
                                 "        </td>\n" +
-                                "        <td nowrap class=\"last-updated\">"+estimate+"\n" +
+                                "        <td width=\"25%\" nowrap class=\"assignee\">"+projectMap.get(project)+"\n" +
+                                "        </td>\n" +
+                                "        <td width=\"20%\" nowrap class=\"last-updated\">"+estimate+"\n" +
                                 "        </td>\n" +
                                 "    </tr>");
                 }
-            }else{//该用户没项目时
+            }
+            /*else{//该用户没项目时
                 buffer.append("<tr>\n" +
-                        "        <td nowrap class=\"assignee\">"+assigneeMap.get(user)+"\n" +
+                        "        <td width=\"5%\" nowrap class=\"assignee\">\n" +
                         "        </td>\n" +
-                        "        <td nowrap class=\"assignee\">-\n" +
+                        "        <td width=\"25%\" nowrap class=\"assignee\">"+assigneeMap.get(user)+"\n" +
                         "        </td>\n" +
-                        "        <td nowrap class=\"assignee\">-\n" +
+                        "        <td width=\"25%\" nowrap class=\"assignee\">-\n" +
                         "        </td>\n" +
-                        "        <td nowrap class=\"last-updated\">-\n" +
+                        "        <td width=\"25%\" nowrap class=\"assignee\">-\n" +
+                        "        </td>\n" +
+                        "        <td width=\"20%\" nowrap class=\"last-updated\">-\n" +
                         "        </td>\n" +
                         "    </tr>");
-            }
+            }*/
 
             //显示统计分数
-            buffer.append("<tr>\n" +
-                    "        <td style=\"text-align:center\" colspan=\"2\" class=\"assignee\">统计\n" +
+            /*buffer.append("<tr>\n" +
+                    "        <td width=\"5%\" nowrap class=\"assignee\">-\n" +
                     "        </td>\n" +
-                    "        <td nowrap class=\"assignee\">\n" +
+                    "        <td width=\"25%\" nowrap class=\"assignee\">-\n" +
                     "        </td>\n" +
-                    "        <td nowrap class=\"last-updated\">"+totalScoreMap.get(TOTAL_SCORE_SIGN+user)+"\n" +
+                    "        <td width=\"25%\" class=\"assignee\">统计\n" +
                     "        </td>\n" +
-                    "    </tr>");
+                    "        <td width=\"25%\" nowrap class=\"assignee\">\n" +
+                    "        </td>\n" +
+                    "        <td width=\"20%\" nowrap class=\"last-updated\">"+totalScoreMap.get(TOTAL_SCORE_SIGN+user)+"\n" +
+                    "        </td>\n" +
+                    "    </tr>");*/
 
         }
         return buffer.toString();

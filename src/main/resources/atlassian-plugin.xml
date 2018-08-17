@@ -20,7 +20,9 @@
     <resource type="download" name="images/" location="/images"/>
     <context>issue-estimate-kpi</context>
   </web-resource>
-  <webwork1 key="issue-estimate-kpi-module" name="IssueEstimateKpiModule" i18n-name-key="issue-estimate-kpi-module.name">
+  <webwork1 key="issue-estimate-kpi-module" name="IssueEstimateKpiModule"
+            roles-required="admin"
+            i18n-name-key="issue-estimate-kpi-module.name">
     <description key="issue-estimate-kpi-module.description">The IssueEstimateKpiModule Plugin</description>
     <actions>
       <action name="com.cbis.jira.webwork.IssueEstimateKpiAction" alias="IssueEstimateKpiAction">

@@ -37,18 +37,11 @@
         <table width="100%" class="aui" id="single_groupby_report_table">
             <thead>
                 <tr>
-                    <th>
-                        <h2>用户名</h2>
-                    </th>
-                    <th>
-                        <h2>关键字</h2>
-                    </th>
-                    <th>
-                        <h2>项目名称</h2>
-                    </th>
-                    <th>
-                        <h2>分数</h2>
-                    </th>
+                    <th>#</th>
+                    <th>用户名</th>
+                    <th>关键字</th>
+                    <th>项目名称</th>
+                    <th>分数</th>
                 </tr>
             </thead>
             <tbody>

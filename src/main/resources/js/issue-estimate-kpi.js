@@ -50,6 +50,20 @@ var conditionSearch =  function(startAt,currentPage,pageSize){
     });
 };
 
+var dropDown = function (obj) {
+    var status = AJS.$(obj).find("span").attr("status");
+    var userTrId = AJS.$(obj).parent("tr").attr("id");
+    if (status == "down") {
+        AJS.$(obj).parent("tr").siblings("."+userTrId).show();
+        AJS.$(obj).find("span").attr("status", "up");
+        AJS.$(obj).find("span").removeClass("aui-iconfont-arrows-down").addClass("aui-iconfont-arrows-up");
+    } else {
+        AJS.$(obj).parent("tr").siblings("."+userTrId).hide();
+        AJS.$(obj).find("span").attr("status", "down");
+        AJS.$(obj).find("span").removeClass("aui-iconfont-arrows-up").addClass("aui-iconfont-arrows-down");
+    }
+};
+
 var createLoading = function(obj){
     var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
         "            <p>Loading...</p>\n" +
@@ -66,9 +80,12 @@ AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     var baseUrl = AJS.params.baseURL;
     initSearch(0,1,5);
-
     AJS.$("#searchButton").click(function(){
         console.log("click successs");
         conditionSearch(0,1,5);
+    });
+
+    AJS.$('#single_groupby_report_table').on('click', '.show_hide_button', function(){
+        dropDown(this);
     })
 });
