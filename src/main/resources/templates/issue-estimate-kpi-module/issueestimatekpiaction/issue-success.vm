@@ -9,14 +9,18 @@
 <div class="aui-group">
     <div class="aui-item">
         <div class="field-group">
-            <label for="'userSearchFilter'">用户筛选</label>
             <div class="user-browser__user-search">
-                <input class="text full-width-field" style="width: 50%;height:25px" id="user-filter-userSearchFilter" placeholder="姓名、用户名或电子邮件中包含的" maxlength="255" name="userSearchFilter" type="text">
+                <input class="text full-width-field" style="width: 50%;height:25px" id="user-filter-userSearchFilter" placeholder="jql语法" maxlength="255" name="userSearchFilter" type="text">
                 <button id="searchButton" class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
                     <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
                 </button>
             </div>
         </div>
+    </div>
+</div>
+<div class="aui-group">
+    <div id="error-context" class="aui-item">
+
     </div>
 </div>
 <div class="aui-group">

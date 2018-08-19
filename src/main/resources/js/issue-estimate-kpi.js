@@ -63,6 +63,15 @@ var removeLoading = function(obj){
     obj.find("#search-area-example").remove();
 };
 
+
+var errorMessage = function(message){
+    AJS.messages.error("#error-context", {
+        title: 'error message.',
+        body: '<p>'+message+'</p>'
+    });
+}
+
+
 AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     //initUserSearch(0,1,1);
