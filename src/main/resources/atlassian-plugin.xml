@@ -21,7 +21,7 @@
     <context>issue-estimate-kpi</context>
   </web-resource>
   <webwork1 key="issue-estimate-kpi-module" name="IssueEstimateKpiModule"
-            roles-required="admin"
+            roles-required="administer"
             i18n-name-key="issue-estimate-kpi-module.name">
     <description key="issue-estimate-kpi-module.description">The IssueEstimateKpiModule Plugin</description>
     <actions>

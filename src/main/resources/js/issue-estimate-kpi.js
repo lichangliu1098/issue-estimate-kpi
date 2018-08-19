@@ -6,14 +6,21 @@ var initSearch = function(startAt,currentPage,pageSize) {
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/allUserKpi?startAt="+startAt+"&maxResults="+pageSize,
         type: "GET",
         dataType: "json",
+        error:function(msg){
+            errorMessage(msg.message);
+        },
         success: function(msg){
             console.log("api is success====:data:"+msg);
-            removeLoading(AJS.$("#issueTable"));
-            AJS.$("#issueTable").find("tbody").empty().append(msg.message)
+            if(msg.returnCode == 0){
+                removeLoading(AJS.$("#issueTable"));
+                AJS.$("#issueTable").find("tbody").empty().append(msg.html)
 
-            var total = msg.total;
-            console.log("data:[total=]"+total);
-            createPage(currentPage,pageSize,total,"initSearch");
+                var total = msg.total;
+                console.log("data:[total=]"+total);
+                createPage(currentPage,pageSize,total,"initSearch");
+            }else{
+                errorMessage(msg.message);
+            }
         }
     });
 };
@@ -25,6 +32,13 @@ var isEmpty = function(obj){
     }
     return flag;
 };
+
+var errorMessage = function(message){
+    AJS.messages.error("#error-context", {
+        title: 'error message.',
+        body: '<p>'+message+'</p>'
+    });
+}
 
 var conditionSearch =  function(startAt,currentPage,pageSize){
     AJS.log('conditionSearch beging ...');
@@ -38,14 +52,22 @@ var conditionSearch =  function(startAt,currentPage,pageSize){
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi?jql="+jql+"&startAt="+startAt+"&maxResults="+pageSize,
         type: "GET",
         dataType: "json",
+        error:function(msg){
+            errorMessage(msg.message);
+        },
         success: function(msg){
             console.log("api is success====:data:"+msg);
-            removeLoading(AJS.$("#issueTable"));
-            AJS.$("#issueTable").find("tbody").empty().append(msg.message)
+            if(msg.returnCode == 0){
+                removeLoading(AJS.$("#issueTable"));
+                AJS.$("#issueTable").find("tbody").empty().append(msg.html)
 
-            var total = msg.total;
-            console.log("data:[total=]"+total);
-            createPage(currentPage,pageSize,total,"conditionSearch");
+                var total = msg.total;
+                console.log("data:[total=]"+total);
+                createPage(currentPage,pageSize,total,"conditionSearch");
+            }else{
+                errorMessage(msg.message);
+            }
+
         }
     });
 };

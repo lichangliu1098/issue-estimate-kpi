@@ -68,8 +68,7 @@ public class JiraAPIUtil {
                 }
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block  
-            e.printStackTrace();  
+            e.printStackTrace();
         } finally {  
             br.close();  
             process.destroy();  

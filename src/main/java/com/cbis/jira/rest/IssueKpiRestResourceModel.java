@@ -7,17 +7,35 @@ import javax.xml.bind.annotation.*;
 public class IssueKpiRestResourceModel {
 
     @XmlElement
-    private String message;
+    private String html;
 
     @XmlElement
     private String total;
 
+    @XmlElement
+    private String returnCode="0";
+
+    @XmlElement
+    private String message;
+
+
+
     public IssueKpiRestResourceModel() {
     }
 
-    public IssueKpiRestResourceModel(String message,String total) {
+    public IssueKpiRestResourceModel(String html,String total,String returnCode,String message) {
+        this.html = html;
         this.message = message;
         this.total = total;
+        this.returnCode = returnCode;
+    }
+
+    public String getHtml() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
     }
 
     public String getMessage() {
@@ -34,5 +52,13 @@ public class IssueKpiRestResourceModel {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public String getReturnCode() {
+        return returnCode;
+    }
+
+    public void setReturnCode(String returnCode) {
+        this.returnCode = returnCode;
     }
 }

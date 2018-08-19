@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -27,7 +29,11 @@ public class IssueKpiRestResource {
     private static final String TOTAL_SCORE_SIGN = "total_";
 
     //查询结果过滤条件
-    private static final String FIlTER_FIELDS = "+order+by+assignee&fields=project,assignee,customfield_10909,customfield_10910";
+    private static final String FIlTER_FIELDS = "&order+by+assignee&fields=project,assignee,customfield_10909,customfield_10910";
+
+    private static final String STARTAT = "&startAt=";
+
+    private static final String MAXRESULTS = "&maxResults=";
 
     public IssueKpiRestResource(){}
 
@@ -53,11 +59,10 @@ public class IssueKpiRestResource {
     @GET
     @Path("/searchKpi")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response searchKpi(@QueryParam("jql") final String jql,
+    public Response searchKpi(@QueryParam("jql") String jql,
                                    @QueryParam("startAt") final int startAt,
                                    @QueryParam("maxResults") final int maxResults,
                                    @Context HttpServletRequest request) {
-
         IssueKpiRestResourceModel model = findSerachKpi(jql,startAt,maxResults);
         return Response.ok(model).build();
     }
@@ -65,19 +70,53 @@ public class IssueKpiRestResource {
     private IssueKpiRestResourceModel findSerachKpi(String jql,int startAt,int maxResults) {
 
         IssueKpiRestResourceModel model = new IssueKpiRestResourceModel();
-        log.info("begin to search kpi ============================");
+        log.info("begin to findSerachKpi============================");
         try{
-
+            jql = jql + STARTAT+startAt+MAXRESULTS+maxResults;
             IssueObject issueObject = JiraAPIUtil.findIssues(jql+FIlTER_FIELDS);
+            if(issueObject==null){
+                return new IssueKpiRestResourceModel();
+            }
             int total = issueObject.getTotal();
 
-            HashSet<String> userSet = new HashSet<>();//放用户，用来分页
-            Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String, Double>>();//每个用户所有的项目分数
             Map<String, Double> estimateMap = new HashMap<String, Double>();//每个项目分数
             Map<String,String> assigneeMap = new HashMap<>();//用户名
             Map<String,String> projectMap = new HashMap<>();//项目名
             Map<String,Double> totalScoreMap = new HashMap<>();//统计总分
+            HashSet<String> userSet = new HashSet<>();//放用户，用来分页
+            List<String> errorList = new ArrayList<String>();
 
+            Map<String,Map<String,Double>> resultMap = getSearchKpiData(issueObject,startAt,maxResults,userSet,
+                    assigneeMap, projectMap,estimateMap,totalScoreMap,errorList);
+
+            String html = getHtml(resultMap,assigneeMap,projectMap,totalScoreMap);
+            model.setHtml(html);
+            model.setTotal(String.valueOf(userSet.size()));
+            if(errorList !=null &&errorList.size()>0){
+                log.error("findSerachKpi error and errorList.toString is==="+errorList.toString());
+                model.setReturnCode("1");
+                model.setMessage("获取数据失败");
+                model.setHtml("");
+                model.setTotal("0");
+                return model;
+            }
+
+        }catch (Exception e){
+            log.error("findSerachKpi error:"+e.getMessage());
+        }
+        return model;
+    }
+
+    private Map<String,Map<String,Double>> getSearchKpiData(IssueObject issueObject,int startAt,int maxResults,
+                                                            HashSet<String> userSet,
+                                                            Map<String,String> assigneeMap,Map<String,String> projectMap,
+                                                            Map<String,Double> estimateMap,
+                                                            Map<String,Double> totalScoreMap,
+                                                            List<String> errorList){
+
+        Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String, Double>>();//每个用户所有的项目分数
+        try{
+            log.info("begin to getSearchKpiData============================");
             List<Issue> issueList = issueObject.getIssues();
             Assignee assignee = null;
             Project project = null;
@@ -117,14 +156,13 @@ public class IssueKpiRestResource {
                     }
                 }
             }
-
-            String html = getHtml(resultMap,assigneeMap,projectMap,totalScoreMap);
-            model.setMessage(html);
-            model.setTotal(String.valueOf(userSet.size()));
-        }catch (Exception e){
-            log.error("search kpi error:"+e.getMessage());
+        }catch(Exception e){
+            log.error("get searchKpi Data is error=====:["+e.getMessage()+"]");
+            errorList.add("["+e.getMessage()+"]");
         }
-        return model;
+
+
+        return resultMap;
     }
 
 
@@ -138,18 +176,27 @@ public class IssueKpiRestResource {
             Map<String,String> assigneeMap = new HashMap<>();//用户名
             Map<String,String> projectMap = new HashMap<>();//项目名
             Map<String,Double> totalScoreMap = new HashMap<>();//统计总分
-            String html = getHtml(getData(userList,assigneeMap,projectMap,totalScoreMap),assigneeMap,projectMap,totalScoreMap);
-            model.setMessage(html);
+            List<String> errorList = new ArrayList<String>();//错误列表
+            String html = getHtml(getAllUserKpiData(userList,assigneeMap,projectMap,totalScoreMap,errorList),assigneeMap,projectMap,totalScoreMap);
+            model.setHtml(html);
             model.setTotal(assigneeTotal.getTotal());
+            if(errorList !=null &&errorList.size()>0){
+                log.error("allUserKpi error and errorList.toString is==="+errorList.toString());
+                model.setReturnCode("1");
+                model.setMessage("获取数据失败");
+                model.setHtml("");
+                model.setTotal("0");
+                return model;
+            }
+
         }catch (Exception e){
             log.error("search allUserKpi error:"+e.getMessage());
         }
         return model;
     }
 
-    private Map<String,Map<String,Double>> getData(List<Assignee> userList,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> totalScoreMap){
+    private Map<String,Map<String,Double>> getAllUserKpiData(List<Assignee> userList,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> totalScoreMap,List<String> errorList){
         Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String, Double>>();
-        List<String> errorList = new ArrayList<String>();
         log.debug("get Kpi Data is begin ===============");
 
         if(userList != null){//分页获取的用户，遍历每个用户的所有项目问题
