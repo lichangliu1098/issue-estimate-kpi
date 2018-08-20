@@ -14,7 +14,18 @@ var createPage = function(currentPage,pageSize,total,funcName){
     var pageCount = Math.ceil(total/pageSize);
     var i=1;
     var item = "";
-    if(pageCount <=5){
+
+    if(currentPage >1){
+        item += "<a href=\"#\" " +
+            "onclick='"+funcName+"("+0+","+1+","+pageSize+","+funcName+")' data-page=\""+1+"\" data-start-index=\""+0+"\">首页</a>";
+        item += "<a href=\"#\" " +
+            "onclick='"+funcName+"("+(pageSize*(currentPage-2))+","+(currentPage-1)+","+pageSize+","+funcName+")' data-page=\""+(currentPage-1)+"\" data-start-index=\""+(pageSize*(currentPage-2))+"\">上一页</a>";
+    }else{
+        item += "<span>首页</span>";
+        item += "<span>上一页</span>";
+    }
+
+    if(pageCount <=10){
         for(i;i<=pageCount;i++){
             if(i==currentPage){
                 item += " <strong>"+i+"</strong>";
@@ -23,10 +34,20 @@ var createPage = function(currentPage,pageSize,total,funcName){
                     "onclick='"+funcName+"("+(pageSize*(i-1))+","+i+","+pageSize+")' data-page=\""+i+"\" data-start-index=\""+(pageSize*(i-1))+"\">"+i+"</a>";
             }
         }
+
+        if(currentPage == pageCount){
+            item += "<span>下一页</span>";
+            item += "<span>尾页</span>";
+        }else{
+            item += "<a href=\"#\" " +
+                "onclick='"+funcName+"("+(pageSize*(currentPage))+","+(currentPage+1)+","+pageSize+","+funcName+")' data-page=\""+(currentPage+1)+"\" data-start-index=\""+(pageSize*(currentPage))+"\">下一页</a>";
+            item += "<a href=\"#\" " +
+                "onclick='"+funcName+"("+(pageSize*(pageCount-1))+","+pageCount+","+pageSize+","+funcName+")' data-page=\""+pageCount+"\" data-start-index=\""+(pageCount-1)+"\">尾页</a>";
+        }
         AJS.$("#pageNumber").append(item);
-    }else if(pageCount >5){
-        if(currentPage<5){
-            for(i;i<=5;i++){
+    }else if(pageCount >10){
+        if(currentPage<10){
+            for(i;i<=10;i++){
                 if(i==currentPage){
                     item += " <strong>"+i+"</strong>";
                 }else{
@@ -38,8 +59,18 @@ var createPage = function(currentPage,pageSize,total,funcName){
             if(currentPage <=pageCount-2){
                 item += "<span>...</span>";
             }
+
+            if(currentPage == pageCount){
+                item += "<span>下一页</span>";
+                item += "<span>尾页</span>";
+            }else{
+                item += "<a href=\"#\" " +
+                    "onclick='"+funcName+"("+(pageSize*(currentPage))+","+(currentPage+1)+","+pageSize+","+funcName+")' data-page=\""+(currentPage+1)+"\" data-start-index=\""+(pageSize*(currentPage))+"\">下一页</a>";
+                item += "<a href=\"#\" " +
+                    "onclick='"+funcName+"("+(pageSize*(pageCount-1))+","+pageCount+","+pageSize+","+funcName+")' data-page=\""+pageCount+"\" data-start-index=\""+(pageCount-1)+"\">尾页</a>";
+            }
             AJS.$("#pageNumber").append(item);
-        }else if(currentPage >= 5){
+        }else if(currentPage >= 10){
             for(i;i<=2;i++){
                 item += "<a href=\"#\" " +
                     "onclick='"+funcName+"("+(pageSize*(i-1))+","+i+","+pageSize+")' data-page=\""+i+"\" data-start-index=\""+(pageSize*(i-1))+"\">"+i+"</a>";
@@ -47,7 +78,7 @@ var createPage = function(currentPage,pageSize,total,funcName){
 
             item += "<span>...</span>";
             if(currentPage +1 == pageCount){
-                for(i;i<=pageCount;i++){
+                for(i=pageCount-8;i<=pageCount;i++){
                     if(i==currentPage){
                         item += " <strong>"+i+"</strong>";
                     }else{
@@ -56,7 +87,7 @@ var createPage = function(currentPage,pageSize,total,funcName){
                     }
                 }
             }else if(currentPage == pageCount){
-                for(i=currentPage-2;i<=pageCount;i++){
+                for(i=pageCount-8;i<=pageCount;i++){
                     if(i==currentPage){
                         item += " <strong>"+i+"</strong>";
                     }else{
@@ -65,7 +96,7 @@ var createPage = function(currentPage,pageSize,total,funcName){
                     }
                 }
             }else{
-                for(i = currentPage-1; i <= currentPage+1; i++){//currentPage+1页后面...
+                for(i = currentPage-4; i <= currentPage+4; i++){//currentPage+1页后面...
                     if (i == currentPage) {
                         item += " <strong>"+i+"</strong>";
                     }else{
@@ -75,6 +106,17 @@ var createPage = function(currentPage,pageSize,total,funcName){
                 }
                 item += "<span>...</span>";
             }
+
+            if(currentPage == pageCount){
+                item += "<span>下一页</span>";
+                item += "<span>尾页</span>";
+            }else{
+                item += "<a href=\"#\" " +
+                    "onclick='"+funcName+"("+(pageSize*(currentPage))+","+(currentPage+1)+","+pageSize+","+funcName+")' data-page=\""+(currentPage+1)+"\" data-start-index=\""+(pageSize*(currentPage))+"\">下一页</a>";
+                item += "<a href=\"#\" " +
+                    "onclick='"+funcName+"("+(pageSize*(pageCount-1))+","+pageCount+","+pageSize+","+funcName+")' data-page=\""+pageCount+"\" data-start-index=\""+(pageCount-1)+"\">尾页</a>";
+            }
+
             AJS.$("#pageNumber").append(item);
         }
     }
