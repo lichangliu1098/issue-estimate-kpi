@@ -7,19 +7,20 @@ var initSearch = function(startAt,currentPage,pageSize) {
         type: "GET",
         dataType: "json",
         error:function(msg){
+            removeLoading(AJS.$("#issueTable"));
             errorMessage(msg.message);
         },
         success: function(msg){
             console.log("api is success====:data:"+msg);
+            removeLoading(AJS.$("#issueTable"));
             if(msg.returnCode == 0){
-                removeLoading(AJS.$("#issueTable"));
                 AJS.$("#issueTable").find("tbody").empty().append(msg.html)
-
                 var total = msg.total;
                 console.log("data:[total=]"+total);
                 createPage(currentPage,pageSize,total,"initSearch");
             }else{
                 errorMessage(msg.message);
+                AJS.$("#issueTable").find("tbody").empty();
             }
         }
     });
@@ -34,6 +35,7 @@ var isEmpty = function(obj){
 };
 
 var errorMessage = function(message){
+    AJS.$("#error-context").empty();
     AJS.messages.error("#error-context", {
         title: 'error message.',
         body: '<p>'+message+'</p>'
@@ -49,23 +51,29 @@ var conditionSearch =  function(startAt,currentPage,pageSize){
     }
     createLoading(AJS.$("#issueTable"));
     AJS.$.ajax({
-        url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi?jql="+jql+"&startAt="+startAt+"&maxResults="+pageSize,
-        type: "GET",
+        url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi",
+        type: "POST",
+        data:{
+            "jql":jql,
+            "startAt":startAt,
+            "maxResults":pageSize
+        },
         dataType: "json",
         error:function(msg){
+            removeLoading(AJS.$("#issueTable"));
             errorMessage(msg.message);
         },
         success: function(msg){
+            removeLoading(AJS.$("#issueTable"));
             console.log("api is success====:data:"+msg);
             if(msg.returnCode == 0){
-                removeLoading(AJS.$("#issueTable"));
                 AJS.$("#issueTable").find("tbody").empty().append(msg.html)
-
                 var total = msg.total;
                 console.log("data:[total=]"+total);
                 createPage(currentPage,pageSize,total,"conditionSearch");
             }else{
                 errorMessage(msg.message);
+                AJS.$("#issueTable").find("tbody").empty();
             }
 
         }
@@ -99,15 +107,25 @@ var removeLoading = function(obj){
 };
 
 AJS.toInit(function(){
-    AJS.log('KDP: Planning Page Controller initializing ...');
-    var baseUrl = AJS.params.baseURL;
+    AJS.log('Page Controller initializing ...');
+
+    //初始按用户查询
     initSearch(0,1,5);
+
+    //按钮查询事件
     AJS.$("#searchButton").click(function(){
-        console.log("click successs");
         conditionSearch(0,1,5);
     });
 
+    //展开，缩放
     AJS.$('#single_groupby_report_table').on('click', '.show_hide_button', function(){
         dropDown(this);
-    })
+    });
+    //监控回车触发事件
+    AJS.$('#userSearchFilter').bind('keypress', function(event) {
+        if (event.keyCode == "13") {
+            //回车执行查询
+            AJS.$('#searchButton').click();
+        }
+    });
 });

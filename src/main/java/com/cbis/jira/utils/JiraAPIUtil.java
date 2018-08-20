@@ -25,9 +25,13 @@ public class JiraAPIUtil {
 //      JiraAPIUtil.searchIssues("assignee=username+order+by+duedate");  
 //      System.out.println("*****************************");
 
-        AssigneeTotal assigneeTotal = JiraAPIUtil.findAssigneesByPicker(0,10);
+       // AssigneeTotal assigneeTotal = JiraAPIUtil.findAssigneesByPicker(0,10);
 
-        System.out.println(assigneeTotal.getTotal());
+       // System.out.println(assigneeTotal.getTotal());
+        int total = 23356;
+        int count = 1000;
+        int nextlength = (int) Math.ceil(total/count);
+        System.out.println("nextlength="+nextlength);
     }
   
     static String uri = "https://jira.jiagouyun.com";

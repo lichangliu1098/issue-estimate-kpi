@@ -3,15 +3,13 @@ package com.cbis.jira.rest;
 import com.atlassian.plugins.rest.common.security.AnonymousAllowed;
 import com.cbis.jira.bean.*;
 import com.cbis.jira.utils.JiraAPIUtil;
+import com.cbis.jira.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,12 +26,15 @@ public class IssueKpiRestResource {
 
     private static final String TOTAL_SCORE_SIGN = "total_";
 
+    private static final String DEFAULT_ORDER_BY = "+order+by+assignee";
     //查询结果过滤条件
-    private static final String FIlTER_FIELDS = "&order+by+assignee&fields=project,assignee,customfield_10909,customfield_10910";
+    private static final String FIlTER_FIELDS = "&fields=project,assignee,customfield_10909,customfield_10910";
 
     private static final String STARTAT = "&startAt=";
 
-    private static final String MAXRESULTS = "&maxResults=";
+    private static final String MAXRESULTS = "&maxResults=-1";
+
+    private static final int count = 1000;//最大个数
 
     public IssueKpiRestResource(){}
 
@@ -56,14 +57,19 @@ public class IssueKpiRestResource {
         return Response.ok(model).build();
     }
 
-    @GET
+    @POST
     @Path("/searchKpi")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response searchKpi(@QueryParam("jql") String jql,
-                                   @QueryParam("startAt") final int startAt,
-                                   @QueryParam("maxResults") final int maxResults,
-                                   @Context HttpServletRequest request) {
-        IssueKpiRestResourceModel model = findSerachKpi(jql,startAt,maxResults);
+    public Response searchKpi(@Context HttpServletRequest request) {
+        String jql = request.getParameter("jql");
+        String startAt = request.getParameter("startAt");
+        String maxResults = request.getParameter("maxResults");
+
+        if(!jql.contains("order+by")){
+            jql = jql + DEFAULT_ORDER_BY;//默认根据用户排序
+        }
+
+        IssueKpiRestResourceModel model = findSerachKpi(jql,Integer.parseInt(startAt),Integer.parseInt(maxResults));
         return Response.ok(model).build();
     }
 
@@ -72,12 +78,10 @@ public class IssueKpiRestResource {
         IssueKpiRestResourceModel model = new IssueKpiRestResourceModel();
         log.info("begin to findSerachKpi============================");
         try{
-            jql = jql + STARTAT+startAt+MAXRESULTS+maxResults;
-            IssueObject issueObject = JiraAPIUtil.findIssues(jql+FIlTER_FIELDS);
+            IssueObject issueObject = JiraAPIUtil.findIssues(jql+MAXRESULTS+FIlTER_FIELDS);
             if(issueObject==null){
                 return new IssueKpiRestResourceModel();
             }
-            int total = issueObject.getTotal();
 
             Map<String, Double> estimateMap = new HashMap<String, Double>();//每个项目分数
             Map<String,String> assigneeMap = new HashMap<>();//用户名
@@ -85,10 +89,26 @@ public class IssueKpiRestResource {
             Map<String,Double> totalScoreMap = new HashMap<>();//统计总分
             HashSet<String> userSet = new HashSet<>();//放用户，用来分页
             List<String> errorList = new ArrayList<String>();
+            Map<String,Map<String,Double>> resultMap = new HashMap<>();
 
-            Map<String,Map<String,Double>> resultMap = getSearchKpiData(issueObject,startAt,maxResults,userSet,
-                    assigneeMap, projectMap,estimateMap,totalScoreMap,errorList);
+            int total = issueObject.getTotal();
+            int nextlength = (int) Math.ceil(total/count);//获得总问题数有多少个，按照1000进行循环取
+            if(nextlength>1){//大于1000时循环取
+                for(int j=0;j<=nextlength;j++){
+                    String nextJql = jql +STARTAT+(count*j)+MAXRESULTS+FIlTER_FIELDS;//如果总数>1000则取下个1000
+                    issueObject = JiraAPIUtil.findIssues(nextJql);
+                    if(issueObject == null){
+                        continue;
+                    }
+                   getSearchKpiData(issueObject,startAt,maxResults,userSet,
+                            assigneeMap, projectMap,estimateMap,totalScoreMap,resultMap,errorList);
+                }
+            }else{
+               getSearchKpiData(issueObject,startAt,maxResults,userSet,
+                        assigneeMap, projectMap,estimateMap,totalScoreMap,resultMap,errorList);
+            }
 
+            //组装html
             String html = getHtml(resultMap,assigneeMap,projectMap,totalScoreMap);
             model.setHtml(html);
             model.setTotal(String.valueOf(userSet.size()));
@@ -112,22 +132,30 @@ public class IssueKpiRestResource {
                                                             Map<String,String> assigneeMap,Map<String,String> projectMap,
                                                             Map<String,Double> estimateMap,
                                                             Map<String,Double> totalScoreMap,
+                                                            Map<String,Map<String,Double>> resultMap,
                                                             List<String> errorList){
 
-        Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String, Double>>();//每个用户所有的项目分数
-        try{
-            log.info("begin to getSearchKpiData============================");
-            List<Issue> issueList = issueObject.getIssues();
-            Assignee assignee = null;
-            Project project = null;
-            Double estimate = null;
-            for(int i=0;i<issueList.size();i++) {
-                Issue issue = issueList.get(i);
+        Assignee assignee = null;
+        Project project = null;
+        Double estimate = null;
+        Issue issue = null;
+
+        log.info("begin to getSearchKpiData============================");
+
+        List<Issue> issueList = issueObject.getIssues();
+
+        for(int i=0;i<issueList.size();i++) {
+            issue = issueList.get(i);
+            assignee = issue.getFields().getAssignee();
+            if(assignee == null){//存在未分配的问题
+                continue;
+            }
+            try{
                 if(!userSet.contains(issue.getFields().getAssignee().getKey())){//获取用户总数
                     userSet.add(issue.getFields().getAssignee().getKey());
                 }
-                if(userSet.size()>=startAt&&resultMap.size()<=maxResults){//分页
-                    assignee = issue.getFields().getAssignee();
+                if(userSet.size()>=startAt&&resultMap.size()<=(maxResults-1)){//分页
+
                     project = issue.getFields().getProject();
                     estimate = issue.getFields().getCustomfield_10910();
                     if(!assigneeMap.containsKey(assignee.getKey())){//把用户名称放入map
@@ -155,13 +183,11 @@ public class IssueKpiRestResource {
                         resultMap.put(assignee.getKey(),estimateMap);
                     }
                 }
+            }catch(Exception e){
+                log.error("get searchKpi Data is error=====issue_key=:["+issue.getKey()+"]");
+                errorList.add("issue_key=:["+issue.getKey()+"]");
             }
-        }catch(Exception e){
-            log.error("get searchKpi Data is error=====:["+e.getMessage()+"]");
-            errorList.add("["+e.getMessage()+"]");
         }
-
-
         return resultMap;
     }
 
@@ -233,8 +259,8 @@ public class IssueKpiRestResource {
                         resultMap.put(username,new HashMap<String, Double>());
                     }
                 }catch(Exception e){
-                    log.error("get Kpi Data is error=====:["+e.getMessage()+"]");
-                    errorList.add("["+e.getMessage()+"]");
+                    log.error("get Kpi Data is error=====assignee.username=:["+assignee.getName()+"]");
+                    errorList.add("assignee.username=:["+assignee.getName()+"]");
                 }
             }
         }
@@ -247,31 +273,36 @@ public class IssueKpiRestResource {
 
         for(String user : map.keySet()){
             Map<String,Double> tempMap = map.get(user);
-                buffer.append("<tr id=\""+user+"\">\n" +
-                        "        <td width=\"5%\" class=\"show_hide_button\" nowrap class=\"assignee\"><span class=\"aui-icon aui-icon-small aui-iconfont-arrows-down\" status=\"down\">icons</span>\n" +
-                        "        </td>\n" +
-                        "        <td width=\"25%\" nowrap class=\"assignee\">"+assigneeMap.get(user)+"\n" +
-                        "        </td>\n" +
-                        "        <td width=\"25%\" nowrap class=\"assignee\">"+user+"\n" +
-                        "        </td>\n" +
-                        "        <td width=\"25%\" nowrap class=\"assignee\">总分\n" +
-                        "        </td>\n" +
-                        "        <td width=\"20%\" nowrap class=\"last-updated\">"+totalScoreMap.get(TOTAL_SCORE_SIGN+user)+"\n" +
-                        "        </td>\n" +
-                        "    </tr>");
+            double totalScore = totalScoreMap.get(TOTAL_SCORE_SIGN+user);//总分
+            buffer.append("<tr id=\""+user+"\">\n" +
+                    "        <td width=\"5%\" class=\"show_hide_button\" nowrap class=\"assignee\"><span class=\"aui-icon aui-icon-small aui-iconfont-arrows-down\" status=\"down\">icons</span>\n" +
+                    "        </td>\n" +
+                    "        <td width=\"20%\" nowrap class=\"assignee\">"+assigneeMap.get(user)+"\n" +
+                    "        </td>\n" +
+                    "        <td width=\"20%\" nowrap class=\"assignee\">"+user+"\n" +
+                    "        </td>\n" +
+                    "        <td width=\"20%\" nowrap class=\"assignee\">总分\n" +
+                    "        </td>\n" +
+                    "        <td width=\"20%\" nowrap class=\"last-updated\">"+totalScore+"\n" +
+                    "        </td>\n" +
+                    "        <td width=\"15%\" nowrap class=\"last-updated\">-\n" +
+                    "        </td>\n" +
+                    "    </tr>");
             if(tempMap.size()!=0){
                 for(String project:tempMap.keySet()){
                     Double estimate = tempMap.get(project);
                         buffer.append("<tr class=\""+user+"\" style=\"display:none\">\n" +
                                 "        <td width=\"5%\" nowrap class=\"assignee\">\n" +
                                 "        </td>\n" +
-                                "        <td width=\"25%\" nowrap class=\"assignee\">\n" +
+                                "        <td width=\"20%\" nowrap class=\"assignee\">\n" +
                                 "        </td>\n" +
-                                "        <td width=\"25%\" nowrap class=\"assignee\">"+project+"\n" +
+                                "        <td width=\"20%\" nowrap class=\"assignee\">"+project+"\n" +
                                 "        </td>\n" +
-                                "        <td width=\"25%\" nowrap class=\"assignee\">"+projectMap.get(project)+"\n" +
+                                "        <td width=\"20%\" nowrap class=\"assignee\">"+projectMap.get(project)+"\n" +
                                 "        </td>\n" +
                                 "        <td width=\"20%\" nowrap class=\"last-updated\">"+estimate+"\n" +
+                                "        </td>\n" +
+                                "        <td width=\"15%\" nowrap class=\"last-updated\">"+Utils.getPercent(estimate,totalScore)+"\n" +
                                 "        </td>\n" +
                                 "    </tr>");
                 }

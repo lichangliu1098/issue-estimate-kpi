@@ -45,6 +45,7 @@
                     <th>关键字</th>
                     <th>项目名称</th>
                     <th>分数</th>
+                    <th>占比</th>
                 </tr>
             </thead>
             <tbody>
