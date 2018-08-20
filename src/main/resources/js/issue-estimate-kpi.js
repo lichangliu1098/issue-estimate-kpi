@@ -79,6 +79,8 @@ AJS.toInit(function(){
     AJS.$("#show_hide_button").click(function (){
         dropDown(this);
     });
+
+    createPage(1,5,50,"createPage");
     /*AJS.$("#searchButton").click(function(){
         console.log("click successs");
         conditionSearch(startAt,currentPage,pageSize);
