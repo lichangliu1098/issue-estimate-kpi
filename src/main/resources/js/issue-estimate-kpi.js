@@ -1,18 +1,18 @@
 var initSearch = function(startAt,currentPage,pageSize) {
     AJS.log('initSearch beging ...');
 
-    createLoading(AJS.$("#issueTable"));
+    createLoading();
     AJS.$.ajax({
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/allUserKpi?startAt="+startAt+"&maxResults="+pageSize,
         type: "GET",
         dataType: "json",
         error:function(msg){
-            removeLoading(AJS.$("#issueTable"));
-            errorMessage(msg.message);
+            removeLoading();
+            errorMessage("请求超时");
         },
         success: function(msg){
             console.log("api is success====:data:"+msg);
-            removeLoading(AJS.$("#issueTable"));
+            removeLoading();
             if(msg.returnCode == 0){
                 AJS.$("#issueTable").find("tbody").empty().append(msg.html)
                 var total = msg.total;
@@ -45,11 +45,10 @@ var errorMessage = function(message){
 var conditionSearch =  function(startAt,currentPage,pageSize){
     AJS.log('conditionSearch beging ...');
     var jql = AJS.$("#userSearchFilter").val().replace(/^\s+|\s+$/g,"");
-    if(isEmpty(jql)){//查询所有
-        initSearch(0,1,pageSize);
+    if(isEmpty(jql)){
         return;
     }
-    createLoading(AJS.$("#issueTable"));
+    createLoading();
     AJS.$.ajax({
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi",
         type: "POST",
@@ -60,11 +59,11 @@ var conditionSearch =  function(startAt,currentPage,pageSize){
         },
         dataType: "json",
         error:function(msg){
-            removeLoading(AJS.$("#issueTable"));
-            errorMessage(msg.message);
+            removeLoading();
+            errorMessage("请求超时");
         },
         success: function(msg){
-            removeLoading(AJS.$("#issueTable"));
+            removeLoading();
             console.log("api is success====:data:"+msg);
             if(msg.returnCode == 0){
                 AJS.$("#issueTable").find("tbody").empty().append(msg.html)
@@ -94,16 +93,12 @@ var dropDown = function (obj) {
     }
 };
 
-var createLoading = function(obj){
-    var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
-        "            <p>Loading...</p>\n" +
-        " <span class=\"aui-icon aui-icon-wait\">loading</span>\n" +
-        "            </div>"
-    obj.append(loadingHtml);
+var createLoading = function(){
+    AJS.dialog2("#loading-dialog").show();
 };
 
-var removeLoading = function(obj){
-    obj.find("#search-area-example").remove();
+var removeLoading = function(){
+    AJS.dialog2("#loading-dialog").hide();
 };
 
 AJS.toInit(function(){

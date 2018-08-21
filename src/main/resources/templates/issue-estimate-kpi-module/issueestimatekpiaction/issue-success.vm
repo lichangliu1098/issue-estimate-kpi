@@ -6,6 +6,21 @@
     </script>
 </head>
 <body>
+    <section role="dialog" id="loading-dialog" class="aui-layer aui-dialog2 aui-dialog2-medium" aria-hidden="true">
+        <!-- Dialog header -->
+        <header class="aui-dialog2-header">
+            <!-- The dialog's title -->
+            <h2 class="aui-dialog2-header-main">正在加载</h2>
+        </header>
+        <!-- Main dialog content -->
+        <div class="aui-dialog2-content" style="text-align: center;">
+            <div id="search-area-example" class="custom-card-style">
+                <p>Loading...</p>
+                <span class="aui-icon aui-icon-wait">loading</span>
+            </div>
+        </div>
+    </section>
+
     <div class="aui-group">
         <div class="aui-item">
             <div class="field-group">
