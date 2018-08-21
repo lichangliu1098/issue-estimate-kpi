@@ -34,7 +34,7 @@ public class IssueEstimateKpiAction extends JiraWebActionSupport
             pageBuilderService.assembler().resources().requireWebResource("com.cbis.jira.issue-estimate-kpi:issue-estimate-kpi-login-resources");
             return "no-login";
         }
-
+        //判断当前用户是否在组中，不是则不给访问权限
         boolean groupStatue_one = userManager.isUserInGroup(userKey,GROUPS_ARR[0]);
         boolean groupStatue_two = userManager.isUserInGroup(userKey,GROUPS_ARR[1]);
         if(!groupStatue_one&&!groupStatue_two){
