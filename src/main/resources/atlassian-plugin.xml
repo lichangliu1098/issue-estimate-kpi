@@ -33,7 +33,6 @@
     <context>issue-estimate-kpi</context>
   </web-resource>
   <webwork1 key="issue-estimate-kpi-module" name="IssueEstimateKpiModule"
-            roles-required="administer"
             i18n-name-key="issue-estimate-kpi-module.name">
     <description key="issue-estimate-kpi-module.description">The IssueEstimateKpiModule Plugin</description>
     <actions>
@@ -44,11 +43,18 @@
       </action>
     </actions>
   </webwork1>
-  <web-section name="Issue Estimate Kpi Section" i18n-name-key="issue-estimate-kpi-section.name" key="issue-estimate-kpi-section" location="system.admin.top.navigation.bar" weight="10">
+  <web-item name="Issue Top Item" i18n-name-key="issue-top-item.name" key="issue-top-item"
+            section="system.top.navigation.bar">
+    <description key="issue-top-item.description">The Issue Top Item Plugin</description>
+    <label key="issue-top.label"></label>
+    <link linkId="issue-top-item-link"></link>
+    <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserLoggedInCondition"/>
+  </web-item>
+  <web-section name="Issue Estimate Kpi Section" i18n-name-key="issue-estimate-kpi-section.name" key="issue-estimate-kpi-section" location="issue-top-item-link" weight="10">
     <description key="issue-estimate-kpi-section.description">The Issue Estimate Kpi Section Plugin</description>
     <label key="issue-estimate-kpi-section.label"/>
   </web-section>
-  <web-item name="Issue Estimate Kpi Item" i18n-name-key="issue-estimate-kpi-item.name" key="issue-estimate-kpi-item" section="system.admin.top.navigation.bar/issue-estimate-kpi-section" weight="10">
+  <web-item name="Issue Estimate Kpi Item" i18n-name-key="issue-estimate-kpi-item.name" key="issue-estimate-kpi-item" section="issue-top-item-link/issue-estimate-kpi-section" weight="10">
     <description key="issue-estimate-kpi-item.description">The Issue Estimate Kpi Item Plugin</description>
     <label key="issue-estimate-kpi-item.label"/>
     <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa?startAt=0&amp;currentPage=1</link>

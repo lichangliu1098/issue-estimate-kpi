@@ -1,7 +1,7 @@
 <html>
 <head>
     <title>用户</title>
-    <meta name="decorator" content="atl.admin">
+    <meta name="decorator" content="atl.general">
     <script type="text/javascript">
     </script>
 </head>
