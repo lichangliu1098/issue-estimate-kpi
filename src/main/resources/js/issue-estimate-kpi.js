@@ -1,13 +1,13 @@
 var initUserSearch = function(startAt,currentPage,pageSize) {
     AJS.log('initUserSearch beging .....startAt=['+startAt+']');
-    //createLoading(AJS.$("#issueTable"));
+    //createLoading();
     AJS.$.ajax({
         url: AJS.params.baseURL + "/rest/api/2/search?jql=assignee=admin&startAt="+startAt+"&fields=id",
         type: "GET",
         dataType: "json",
         success: function(msg){
             console.log("api is success====:data:"+msg);
-            //removeLoading(AJS.$("#issueTable"));
+            //removeLoading();
             var startAt = msg.startAt;
             var total = msg.total;
 
@@ -21,14 +21,14 @@ var initUserSearch = function(startAt,currentPage,pageSize) {
 var conditionSearch =  function(startAt,currentPage,pageSize){
     AJS.log('conditionSearch beging ...');
     var jql="assignee=lichangliu";
-    createLoading(AJS.$("#issueTable"));
+    createLoading();
     AJS.$.ajax({
         url: AJS.params.baseURL + "/rest/issueApi/1.0/issueKpi/searchKpi?jql="+jql+"&startAt="+startAt+"&maxResults="+pageSize,
         type: "GET",
         dataType: "json",
         success: function(msg){
             console.log("api is success====:data:"+msg);
-            removeLoading(AJS.$("#issueTable"));
+            removeLoading();
             AJS.$("#issueTable").find("tbody").empty().append(msg.message)
 
             var total = msg.total;
@@ -51,16 +51,12 @@ var dropDown = function (obj) {
     }
 }
 
-var createLoading = function(obj){
-    var loadingHtml = "<div id=\"search-area-example\" style=\"margin-top:20px\" class=\"custom-card-style\">\n" +
-        "            <p>Loading...</p>\n" +
-        " <span class=\"aui-icon aui-icon-wait\">loading</span>\n" +
-        "            </div>"
-    obj.append(loadingHtml);
+var createLoading = function(){
+    AJS.dialog2("#loading-dialog").show();
 };
 
-var removeLoading = function(obj){
-    obj.find("#search-area-example").remove();
+var removeLoading = function(){
+    AJS.dialog2("#loading-dialog").hide();
 };
 
 
@@ -76,11 +72,12 @@ AJS.toInit(function(){
     AJS.log('KDP: Planning Page Controller initializing ...');
     //initUserSearch(0,1,1);
 
-    AJS.$("#show_hide_button").click(function (){
+    /*AJS.$("#show_hide_button").click(function (){
         dropDown(this);
-    });
-
-    createPage(1,5,50,"createPage");
+    });*/
+    createLoading();
+    removeLoading();
+    //createPage(1,5,50,"createPage");
     /*AJS.$("#searchButton").click(function(){
         console.log("click successs");
         conditionSearch(startAt,currentPage,pageSize);
