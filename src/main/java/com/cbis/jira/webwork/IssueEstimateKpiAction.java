@@ -1,8 +1,5 @@
 package com.cbis.jira.webwork;
 
-import com.atlassian.crowd.embedded.api.Group;
-import com.atlassian.jira.bc.group.search.GroupPickerSearchService;
-import com.atlassian.jira.plugin.webresource.JiraWebResourceManager;
 import com.atlassian.jira.web.action.JiraWebActionSupport;
 import com.atlassian.sal.api.user.UserKey;
 import com.atlassian.sal.api.user.UserManager;
@@ -11,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class IssueEstimateKpiAction extends JiraWebActionSupport
 {

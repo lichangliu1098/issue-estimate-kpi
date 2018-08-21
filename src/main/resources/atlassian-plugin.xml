@@ -44,13 +44,20 @@
       </action>
     </actions>
   </webwork1>
+  <web-item name="Issue Top Item" i18n-name-key="issue-Top.name" key="issue-top-item"
+            section="system.top.navigation.bar" weight="1000">
+    <description key="issue-top-item.description">The Issue Estimate Kpi Item Plugin</description>
+    <label key="issue-top.label"></label>
+    <link linkId="issue-top-item-link"></link>
+    <condition class="com.atlassian.jira.plugin.webfragment.conditions.UserLoggedInCondition"/>
+  </web-item>
   <web-section name="Issue Estimate Kpi Section" i18n-name-key="issue-estimate-kpi-section.name" key="issue-estimate-kpi-section"
-               location="admin_system_menu" weight="10">
+               location="issue-top-item-link" weight="1000">
     <description key="issue-estimate-kpi-section.description">The Issue Estimate Kpi Section Plugin</description>
     <label key="issue-estimate-kpi-section.label"/>
   </web-section>
   <web-item name="Issue Estimate Kpi Item" i18n-name-key="issue-estimate-kpi-item.name" key="issue-estimate-kpi-item"
-            section="admin_system_menu/issue-estimate-kpi-section" weight="10">
+            section="issue-top-item-link/issue-estimate-kpi-section" weight="1000">
     <description key="issue-estimate-kpi-item.description">The Issue Estimate Kpi Item Plugin</description>
     <label key="issue-estimate-kpi-item.label"></label>
     <link linkId="issue-estimate-kpi-item-link">/secure/IssueEstimateKpiAction.jspa?startAt=0&amp;currentPage=1</link>
