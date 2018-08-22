@@ -28,7 +28,7 @@ public class IssueKpiRestResource {
 
     private static final String DEFAULT_ORDER_BY = "+order+by+assignee";
     //查询结果过滤条件
-    private static final String FIlTER_FIELDS = "&fields=project,assignee,customfield_10909,customfield_10910";
+    private static final String FIlTER_FIELDS = "&fields=project,assignee,customfield_10909,customfield_10006";
 
     private static final String STARTAT = "&startAt=";
 
@@ -157,7 +157,7 @@ public class IssueKpiRestResource {
                 if(userSet.size()>=startAt&&resultMap.size()<=(maxResults-1)){//分页
 
                     project = issue.getFields().getProject();
-                    estimate = issue.getFields().getCustomfield_10910();
+                    estimate = issue.getFields().getCustomfield_10006();
                     if(!assigneeMap.containsKey(assignee.getKey())){//把用户名称放入map
                         assigneeMap.put(assignee.getKey(),assignee.getDisplayName());
                     }
@@ -243,7 +243,7 @@ public class IssueKpiRestResource {
                             if(!projectMap.containsKey(key)){
                                 projectMap.put(key,issue.getFields().getProject().getName());
                             }
-                            Double estimate = issue.getFields().getCustomfield_10910();
+                            Double estimate = issue.getFields().getCustomfield_10006();
                             totalScore += estimate;
                             if (estimateMap.containsKey(key)) {
                                 Double temp = estimateMap.get(key);

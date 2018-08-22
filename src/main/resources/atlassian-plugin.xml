@@ -14,6 +14,7 @@
   <web-resource key="issue-estimate-kpi-resources" name="issue-estimate-kpi Web Resources">
     <dependency>com.atlassian.auiplugin:ajs</dependency>
     <dependency>com.atlassian.auiplugin:aui-spinner</dependency>
+    <dependency>com.atlassian.auiplugin:dialog2</dependency>
     <resource type="download" name="issue-estimate-kpi.css" location="/css/issue-estimate-kpi.css"/>
     <resource type="download" name="issue-estimate-kpi.js" location="/js/issue-estimate-kpi.js"/>
     <resource type="download" name="issue-estimate-page.js" location="/js/issue-estimate-page.js"/>

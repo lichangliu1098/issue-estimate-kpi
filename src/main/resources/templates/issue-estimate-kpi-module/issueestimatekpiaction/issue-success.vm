@@ -6,69 +6,76 @@
     </script>
 </head>
 <body>
-    <section role="dialog" id="loading-dialog" class="aui-layer aui-dialog2 aui-dialog2-medium" aria-hidden="true">
-        <!-- Dialog header -->
-        <header class="aui-dialog2-header">
-            <!-- The dialog's title -->
-            <h2 class="aui-dialog2-header-main">正在加载</h2>
-        </header>
-        <!-- Main dialog content -->
-        <div class="aui-dialog2-content" style="text-align: center;">
-            <div id="search-area-example" class="custom-card-style">
-                <p>Loading...</p>
-                <span class="aui-icon aui-icon-wait">loading</span>
-            </div>
-        </div>
-    </section>
-
-    <div class="aui-group">
-        <div class="aui-item">
-            <div class="field-group">
-                <div class="user-browser__user-search">
-                    <input class="text full-width-field" style="width: 50%;height:25px" id="userSearchFilter" placeholder="请输入jql语句..." maxlength="255" name="userSearchFilter" type="text">
-                    <button id="searchButton" class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
-                        <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="aui-group">
-        <div id="error-context" class="aui-item">
-        </div>
-    </div>
-    <div class="aui-group">
-        <div class="aui-group aui-group-split count-pagination">
-            <div class="results-count aui-item">
-                共 <span class="results-count-total" id="total"></span>个。
-            </div>
+    <div class="aui-group" style="padding:20px">
+        <div class="aui-group">
             <div class="aui-item">
-                <input id="startAt" type="hidden" value="$startAt">
-                <input id="currentPage" type="hidden" value="$currentPage">
-                <div id="pageNumber" class="pagination">
-
+                <!-- Create a trigger which will be used by the JavaScript -->
+                <!-- Render the dialog -->
+                <section role="dialog" id="loading-dialog" class="aui-layer aui-dialog2 aui-dialog2-medium" aria-hidden="true">
+                    <!-- Dialog header -->
+                    <header class="aui-dialog2-header">
+                        <!-- The dialog's title -->
+                        <h2 class="aui-dialog2-header-main">正在加载</h2>
+                        <!-- Close icon -->
+                    </header>
+                    <!-- Main dialog content -->
+                    <div class="aui-dialog2-content" style="text-align: center;">
+                        <div id="search-area-example" class="custom-card-style">
+                            <p>Loading...</p>
+                            <span class="aui-icon aui-icon-wait">loading</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="aui-group">
+            <div class="aui-item">
+                <div class="field-group">
+                    <div class="user-browser__user-search">
+                        <input class="text full-width-field" style="width: 50%;height:25px" id="userSearchFilter" placeholder="请输入jql语句..." maxlength="255" name="userSearchFilter" type="text">
+                        <button id="searchButton" class="aui-item aui-button aui-button-subtle search-button" type="button" original-title="搜索问题">
+                            <span class="aui-icon aui-icon-small aui-iconfont-search">搜索</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="issueTable" class="aui-group">
-        <table width="100%" class="aui" id="single_groupby_report_table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>用户名</th>
-                    <th>关键字</th>
-                    <th>项目名称</th>
-                    <th>分数</th>
-                    <th>占比</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="aui-group">
+            <div id="error-context" class="aui-item">
+            </div>
+        </div>
+        <div class="aui-group">
+            <div class="aui-group aui-group-split count-pagination">
+                <div class="results-count aui-item">
+                    共 <span class="results-count-total" id="total"></span>个。
+                </div>
+                <div class="aui-item">
+                    <input id="startAt" type="hidden" value="$startAt">
+                    <input id="currentPage" type="hidden" value="$currentPage">
+                    <div id="pageNumber" class="pagination">
 
-            </tbody>
-        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="issueTable" class="aui-group">
+            <table width="100%" class="aui" id="single_groupby_report_table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>用户名</th>
+                        <th>关键字</th>
+                        <th>项目名称</th>
+                        <th>分数</th>
+                        <th>占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
     </div>
-</table>
 </body>
 </html>
 

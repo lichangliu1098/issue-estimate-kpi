@@ -6,9 +6,9 @@ public class Fields {
 
     private String timespeng;
 
-    private double customfield_10909;//评估工时
+    private double customfield_10909;//
 
-    private double customfield_10910;//实际工时
+    private double customfield_10006;//预估
 
     private Project project;
 
@@ -56,12 +56,12 @@ public class Fields {
         this.customfield_10909 = customfield_10909;
     }
 
-    public double getCustomfield_10910() {
-        return customfield_10910;
+    public double getCustomfield_10006() {
+        return customfield_10006;
     }
 
-    public void setCustomfield_10910(double customfield_10910) {
-        this.customfield_10910 = customfield_10910;
+    public void setCustomfield_10006(double customfield_10006) {
+        this.customfield_10006 = customfield_10006;
     }
 
     public Project getProject() {
