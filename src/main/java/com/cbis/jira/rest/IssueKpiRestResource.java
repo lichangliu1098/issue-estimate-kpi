@@ -146,6 +146,9 @@ public class IssueKpiRestResource {
 
         for(int i=0;i<issueList.size();i++) {
             issue = issueList.get(i);
+            if(issue.getFields()==null){
+                continue;
+            }
             assignee = issue.getFields().getAssignee();
             if(assignee == null){//存在未分配的问题
                 continue;
@@ -154,25 +157,27 @@ public class IssueKpiRestResource {
                 if(!userSet.contains(issue.getFields().getAssignee().getKey())){//获取用户总数
                     userSet.add(issue.getFields().getAssignee().getKey());
                 }
+
                 if(userSet.size()>=startAt&&resultMap.size()<=(maxResults-1)){//分页
 
                     project = issue.getFields().getProject();
                     estimate = issue.getFields().getCustomfield_10006();
+
                     if(!assigneeMap.containsKey(assignee.getKey())){//把用户名称放入map
                         assigneeMap.put(assignee.getKey(),assignee.getDisplayName());
                     }
-                    if(!projectMap.containsKey(project.getKey())){//把项目名称放入map
-                        projectMap.put(project.getKey(),project.getName());
+
+                    if(!projectMap.containsKey(project.getKey())){
+                        projectMap.put(project.getKey(),issue.getFields().getProject().getName());
                     }
+
                     //第一层map
-                    if(estimateMap.containsKey(project.getKey())){
-                        Double temp = estimateMap.get(project.getKey());
+                    if(estimateMap.containsKey(assignee.getKey()+"_"+project.getKey())){
+                        Double temp = estimateMap.get(assignee.getKey()+"_"+project.getKey());
                         estimate += temp;
-                        estimateMap.put(project.getKey(),estimate);
-                        totalScoreMap.put(TOTAL_SCORE_SIGN+assignee.getKey(),estimate);
+                        estimateMap.put(assignee.getKey()+"_"+project.getKey(),estimate);
                     }else{
-                        estimateMap.put(project.getKey(),estimate);
-                        totalScoreMap.put(TOTAL_SCORE_SIGN+assignee.getKey(),estimate);
+                        estimateMap.put(assignee.getKey()+"_"+project.getKey(),estimate);
                     }
                     //第二层map
                     if(resultMap.containsKey(assignee.getKey())){
@@ -188,7 +193,56 @@ public class IssueKpiRestResource {
                 errorList.add("issue_key=:["+issue.getKey()+"]");
             }
         }
+        //获取每个项目所有的分数
+        getAllProjectEstimate(projectMap,totalScoreMap);
+
         return resultMap;
+    }
+
+    //获取每个项目对应的所有分数
+    private void getAllProjectEstimate(Map<String,String> projectMap, Map<String,Double> projectTotalScoreMap) {
+
+        for(String key : projectMap.keySet()){
+            try{
+                String jql = "project="+key;
+                IssueObject issueObject = JiraAPIUtil.findIssues(jql+MAXRESULTS+"&fields=customfield_10006");
+                if(issueObject==null){
+                    continue;
+                }
+
+                int total = issueObject.getTotal();
+                int nextlength = (int) Math.ceil(total/count);//获得总问题数有多少个，按照1000进行循环取
+
+                Double projectScore = getProjectScore(issueObject.getIssues());
+
+                if(nextlength>1){//大于1000时循环取
+                    for(int j=1;j<=nextlength;j++){
+                        String nextJql = jql +STARTAT+(count*j)+MAXRESULTS+FIlTER_FIELDS;//如果总数>1000则取下个1000
+                        issueObject = JiraAPIUtil.findIssues(nextJql);
+                        if(issueObject == null){
+                            continue;
+                        }
+                        Double score = getProjectScore(issueObject.getIssues());
+                        projectScore += score;
+                    }
+                }
+
+                projectTotalScoreMap.put(key,projectScore);
+            }catch(Exception e){
+                log.error("getAllProjectEstimate is error:projectkey===["+key+"]");
+            }
+        }
+    }
+
+    private Double getProjectScore(List<Issue> issues) {
+        double score = 0;
+        for(Issue issue:issues){
+            if(issue.getFields()!=null){
+                double temp = issue.getFields().getCustomfield_10006();
+                score += temp;
+            }
+        }
+        return score;
     }
 
 
@@ -239,22 +293,32 @@ public class IssueKpiRestResource {
                         List<Issue> issueList = issueObject.getIssues();
                         Map<String, Double> estimateMap = new HashMap<String, Double>();
                         for (Issue issue : issueList) {
+                            if(issue.getFields()==null){
+                                continue;
+                            }
                             String key = issue.getFields().getProject().getKey();
                             if(!projectMap.containsKey(key)){
                                 projectMap.put(key,issue.getFields().getProject().getName());
                             }
                             Double estimate = issue.getFields().getCustomfield_10006();
                             totalScore += estimate;
-                            if (estimateMap.containsKey(key)) {
-                                Double temp = estimateMap.get(key);
+                            if (estimateMap.containsKey(username+"_"+key)) {
+                                Double temp = estimateMap.get(username+"_"+key);
                                 estimate = temp + estimate;
-                                estimateMap.put(key, estimate);
+                                estimateMap.put(username+"_"+key, estimate);
                             } else {
-                                estimateMap.put(key, estimate);
+                                estimateMap.put(username+"_"+key, estimate);
                             }
+                            /*//获取每个项目所有的分数
+                            if(totalScoreMap.containsKey(TOTAL_SCORE_SIGN+key)){
+                                Double temp= totalScoreMap.get(TOTAL_SCORE_SIGN+key);
+                                temp = temp + estimate;
+                                totalScoreMap.put(TOTAL_SCORE_SIGN+key,temp);
+                            }else{
+                                totalScoreMap.put(TOTAL_SCORE_SIGN+key,estimate);//每个项目的总分
+                            }*/
                         }
                         resultMap.put(username,estimateMap);
-                        totalScoreMap.put(TOTAL_SCORE_SIGN+username,totalScore);//每个用户的总分
                     }else{
                         resultMap.put(username,new HashMap<String, Double>());
                     }
@@ -263,17 +327,19 @@ public class IssueKpiRestResource {
                     errorList.add("assignee.username=:["+assignee.getName()+"]");
                 }
             }
+            //获取每个项目所有的分数
+             getAllProjectEstimate(projectMap,totalScoreMap);
         }
+
         return  resultMap;
     }
 
-    private String getHtml( Map<String,Map<String,Double>> map,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> totalScoreMap){
+    private String getHtml( Map<String,Map<String,Double>> map,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> projectTotalScoreMap){
 
         StringBuffer buffer = new StringBuffer();
 
         for(String user : map.keySet()){
             Map<String,Double> tempMap = map.get(user);
-            double totalScore = totalScoreMap.get(TOTAL_SCORE_SIGN+user);//总分
             buffer.append("<tr id=\""+user+"\">\n" +
                     "        <td width=\"5%\" class=\"show_hide_button\" nowrap class=\"assignee\"><span class=\"aui-icon aui-icon-small aui-iconfont-arrows-down\" status=\"down\">icons</span>\n" +
                     "        </td>\n" +
@@ -283,28 +349,32 @@ public class IssueKpiRestResource {
                     "        </td>\n" +
                     "        <td width=\"20%\" nowrap class=\"assignee\">总分\n" +
                     "        </td>\n" +
-                    "        <td width=\"20%\" nowrap class=\"last-updated\">"+totalScore+"\n" +
+                    "        <td width=\"20%\" nowrap class=\"last-updated\">-\n" +
                     "        </td>\n" +
                     "        <td width=\"15%\" nowrap class=\"last-updated\">-\n" +
                     "        </td>\n" +
                     "    </tr>");
             if(tempMap.size()!=0){
-                for(String project:tempMap.keySet()){
-                    Double estimate = tempMap.get(project);
+                for(String userproject:tempMap.keySet()){
+                    String[] keyArr = userproject.split("_");
+                    if(user.equals(keyArr[0])){
+                        double totalScore = projectTotalScoreMap.get(keyArr[1]);//每个项目的总分
+                        Double estimate = tempMap.get(userproject);
                         buffer.append("<tr class=\""+user+"\" style=\"display:none\">\n" +
                                 "        <td width=\"5%\" nowrap class=\"assignee\">\n" +
                                 "        </td>\n" +
                                 "        <td width=\"20%\" nowrap class=\"assignee\">\n" +
                                 "        </td>\n" +
-                                "        <td width=\"20%\" nowrap class=\"assignee\">"+project+"\n" +
+                                "        <td width=\"20%\" nowrap class=\"assignee\">"+keyArr[1]+"\n" +
                                 "        </td>\n" +
-                                "        <td width=\"20%\" nowrap class=\"assignee\">"+projectMap.get(project)+"\n" +
+                                "        <td width=\"20%\" nowrap class=\"assignee\">"+projectMap.get(keyArr[1])+"\n" +
                                 "        </td>\n" +
                                 "        <td width=\"20%\" nowrap class=\"last-updated\">"+estimate+"\n" +
                                 "        </td>\n" +
                                 "        <td width=\"15%\" nowrap class=\"last-updated\">"+Utils.getPercent(estimate,totalScore)+"\n" +
                                 "        </td>\n" +
                                 "    </tr>");
+                    }
                 }
             }
             /*else{//该用户没项目时
