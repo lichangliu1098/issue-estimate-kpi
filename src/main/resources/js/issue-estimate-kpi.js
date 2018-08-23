@@ -13,6 +13,7 @@ var initSearch = function(startAt,currentPage,pageSize) {
         success: function(msg){
             console.log("api is success====:data:"+msg);
             removeLoading();
+            removeErrorMessage();
             if(msg.returnCode == 0){
                 AJS.$("#issueTable").find("tbody").empty().append(msg.html)
                 var total = msg.total;
@@ -42,6 +43,10 @@ var errorMessage = function(message){
     });
 }
 
+var removeErrorMessage = function(){
+    AJS.$("#error-context").empty();
+}
+
 var conditionSearch =  function(startAt,currentPage,pageSize){
     AJS.log('conditionSearch beging ...');
     var jql = AJS.$("#userSearchFilter").val().replace(/^\s+|\s+$/g,"");
@@ -64,6 +69,7 @@ var conditionSearch =  function(startAt,currentPage,pageSize){
         },
         success: function(msg){
             removeLoading();
+            removeErrorMessage();
             console.log("api is success====:data:"+msg);
             if(msg.returnCode == 0){
                 AJS.$("#issueTable").find("tbody").empty().append(msg.html)

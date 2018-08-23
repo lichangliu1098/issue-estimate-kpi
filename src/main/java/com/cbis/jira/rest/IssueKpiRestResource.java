@@ -28,7 +28,7 @@ public class IssueKpiRestResource {
 
     private static final String DEFAULT_ORDER_BY = "+order+by+assignee";
     //查询结果过滤条件
-    private static final String FIlTER_FIELDS = "&fields=project,assignee,customfield_10909,customfield_10006";
+    private static final String FIlTER_FIELDS = "&fields=project,assignee,customfield_10006";
 
     private static final String STARTAT = "&startAt=";
 
@@ -86,7 +86,8 @@ public class IssueKpiRestResource {
             Map<String, Double> estimateMap = new HashMap<String, Double>();//每个项目分数
             Map<String,String> assigneeMap = new HashMap<>();//用户名
             Map<String,String> projectMap = new HashMap<>();//项目名
-            Map<String,Double> totalScoreMap = new HashMap<>();//统计总分
+            Map<String,Double> userTotalScoreMap = new HashMap<>();//统计用户总分
+            Map<String,Double> projectTotalScoreMap = new HashMap<>();//统计项目总分
             HashSet<String> userSet = new HashSet<>();//放用户，用来分页
             List<String> errorList = new ArrayList<String>();
             Map<String,Map<String,Double>> resultMap = new HashMap<>();
@@ -101,15 +102,15 @@ public class IssueKpiRestResource {
                         continue;
                     }
                    getSearchKpiData(issueObject,startAt,maxResults,userSet,
-                            assigneeMap, projectMap,estimateMap,totalScoreMap,resultMap,errorList);
+                            assigneeMap, projectMap,estimateMap,userTotalScoreMap,projectTotalScoreMap,resultMap,errorList);
                 }
             }else{
                getSearchKpiData(issueObject,startAt,maxResults,userSet,
-                        assigneeMap, projectMap,estimateMap,totalScoreMap,resultMap,errorList);
+                        assigneeMap, projectMap,estimateMap,userTotalScoreMap,projectTotalScoreMap,resultMap,errorList);
             }
 
             //组装html
-            String html = getHtml(resultMap,assigneeMap,projectMap,totalScoreMap);
+            String html = getHtml(resultMap,assigneeMap,projectMap,userTotalScoreMap,projectTotalScoreMap);
             model.setHtml(html);
             model.setTotal(String.valueOf(userSet.size()));
             if(errorList !=null &&errorList.size()>0){
@@ -131,7 +132,8 @@ public class IssueKpiRestResource {
                                                             HashSet<String> userSet,
                                                             Map<String,String> assigneeMap,Map<String,String> projectMap,
                                                             Map<String,Double> estimateMap,
-                                                            Map<String,Double> totalScoreMap,
+                                                            Map<String,Double> userTotalScoreMap,
+                                                            Map<String,Double> projectTotalScoreMap,
                                                             Map<String,Map<String,Double>> resultMap,
                                                             List<String> errorList){
 
@@ -158,7 +160,7 @@ public class IssueKpiRestResource {
                     userSet.add(issue.getFields().getAssignee().getKey());
                 }
 
-                if(userSet.size()>=startAt&&resultMap.size()<=(maxResults-1)){//分页
+                if(userSet.size()>startAt&&userSet.size()<=(startAt+maxResults)){//分页
 
                     project = issue.getFields().getProject();
                     estimate = issue.getFields().getCustomfield_10006();
@@ -174,11 +176,20 @@ public class IssueKpiRestResource {
                     //第一层map
                     if(estimateMap.containsKey(assignee.getKey()+"_"+project.getKey())){
                         Double temp = estimateMap.get(assignee.getKey()+"_"+project.getKey());
-                        estimate += temp;
-                        estimateMap.put(assignee.getKey()+"_"+project.getKey(),estimate);
+                        temp = estimate+temp;
+                        estimateMap.put(assignee.getKey()+"_"+project.getKey(),temp);
                     }else{
                         estimateMap.put(assignee.getKey()+"_"+project.getKey(),estimate);
                     }
+
+                    if(userTotalScoreMap.containsKey(assignee.getKey())){//获取每个用户的总分
+                        Double userScore = userTotalScoreMap.get(assignee.getKey());
+                        userScore = userScore + estimate;
+                        userTotalScoreMap.put(assignee.getKey(),userScore);
+                    }else{
+                        userTotalScoreMap.put(assignee.getKey(),estimate);
+                    }
+
                     //第二层map
                     if(resultMap.containsKey(assignee.getKey())){
                         Map<String, Double> tempMap = resultMap.get(assignee.getKey());
@@ -194,7 +205,7 @@ public class IssueKpiRestResource {
             }
         }
         //获取每个项目所有的分数
-        getAllProjectEstimate(projectMap,totalScoreMap);
+        getAllProjectEstimate(projectMap,projectTotalScoreMap);
 
         return resultMap;
     }
@@ -255,9 +266,10 @@ public class IssueKpiRestResource {
             List<Assignee> userList = JiraAPIUtil.findAssignees(startAt,maxResults);
             Map<String,String> assigneeMap = new HashMap<>();//用户名
             Map<String,String> projectMap = new HashMap<>();//项目名
-            Map<String,Double> totalScoreMap = new HashMap<>();//统计总分
+            Map<String,Double> userTotalScoreMap = new HashMap<>();//统计用户总分
+            Map<String,Double> projectTotalScoreMap = new HashMap<>();//统计项目总分
             List<String> errorList = new ArrayList<String>();//错误列表
-            String html = getHtml(getAllUserKpiData(userList,assigneeMap,projectMap,totalScoreMap,errorList),assigneeMap,projectMap,totalScoreMap);
+            String html = getHtml(getAllUserKpiData(userList,assigneeMap,projectMap,userTotalScoreMap,projectTotalScoreMap,errorList),assigneeMap,projectMap,userTotalScoreMap,projectTotalScoreMap);
             model.setHtml(html);
             model.setTotal(assigneeTotal.getTotal());
             if(errorList !=null &&errorList.size()>0){
@@ -275,7 +287,7 @@ public class IssueKpiRestResource {
         return model;
     }
 
-    private Map<String,Map<String,Double>> getAllUserKpiData(List<Assignee> userList,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> totalScoreMap,List<String> errorList){
+    private Map<String,Map<String,Double>> getAllUserKpiData(List<Assignee> userList,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> userTotalScoreMap,Map<String,Double> projectTotalScoreMap,List<String> errorList){
         Map<String,Map<String,Double>> resultMap = new HashMap<String, Map<String, Double>>();
         log.debug("get Kpi Data is begin ===============");
 
@@ -286,40 +298,30 @@ public class IssueKpiRestResource {
                     String username = assignee.getName();
                     assigneeMap.put(username,assignee.getDisplayName());
                     //用于rest api查询
-                    String jql = "assignee="+username;
+                    String jql = "assignee="+username+MAXRESULTS+FIlTER_FIELDS;
                     //获取当前用户参与的所有项目的问题
                     IssueObject issueObject = JiraAPIUtil.findIssues(jql);
                     if(issueObject != null) {
                         List<Issue> issueList = issueObject.getIssues();
+
+                        int total = issueObject.getTotal();//获取当前的总条数
+                        int nextlength = (int) Math.ceil(total/count);//获得总问题数有多少个，按照1000进行循环取
+
                         Map<String, Double> estimateMap = new HashMap<String, Double>();
-                        for (Issue issue : issueList) {
-                            if(issue.getFields()==null){
-                                continue;
+                        getResultMap(issueList,username,projectMap,estimateMap,totalScore,userTotalScoreMap,resultMap);
+                        if(nextlength>1){//大于1000时循环取
+                            for(int j=1;j<=nextlength;j++){
+                                String nextJql = jql +STARTAT+(count*j)+MAXRESULTS+FIlTER_FIELDS;//如果总数>1000则取下个1000
+                                issueObject = JiraAPIUtil.findIssues(nextJql);
+                                if(issueObject == null){
+                                    continue;
+                                }
+                                List<Issue> list = issueObject.getIssues();
+                                getResultMap(list,username,projectMap,estimateMap,totalScore,userTotalScoreMap,resultMap);
                             }
-                            String key = issue.getFields().getProject().getKey();
-                            if(!projectMap.containsKey(key)){
-                                projectMap.put(key,issue.getFields().getProject().getName());
-                            }
-                            Double estimate = issue.getFields().getCustomfield_10006();
-                            totalScore += estimate;
-                            if (estimateMap.containsKey(username+"_"+key)) {
-                                Double temp = estimateMap.get(username+"_"+key);
-                                estimate = temp + estimate;
-                                estimateMap.put(username+"_"+key, estimate);
-                            } else {
-                                estimateMap.put(username+"_"+key, estimate);
-                            }
-                            /*//获取每个项目所有的分数
-                            if(totalScoreMap.containsKey(TOTAL_SCORE_SIGN+key)){
-                                Double temp= totalScoreMap.get(TOTAL_SCORE_SIGN+key);
-                                temp = temp + estimate;
-                                totalScoreMap.put(TOTAL_SCORE_SIGN+key,temp);
-                            }else{
-                                totalScoreMap.put(TOTAL_SCORE_SIGN+key,estimate);//每个项目的总分
-                            }*/
                         }
-                        resultMap.put(username,estimateMap);
                     }else{
+                        userTotalScoreMap.put(username,totalScore);//用户总分
                         resultMap.put(username,new HashMap<String, Double>());
                     }
                 }catch(Exception e){
@@ -328,13 +330,36 @@ public class IssueKpiRestResource {
                 }
             }
             //获取每个项目所有的分数
-             getAllProjectEstimate(projectMap,totalScoreMap);
+             getAllProjectEstimate(projectMap,projectTotalScoreMap);
         }
 
         return  resultMap;
     }
 
-    private String getHtml( Map<String,Map<String,Double>> map,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> projectTotalScoreMap){
+    private void getResultMap(List<Issue> issueList,String username, Map<String,String> projectMap,Map<String,Double> estimateMap, double totalScore, Map<String,Double> userTotalScoreMap, Map<String,Map<String,Double>> resultMap) {
+        for (Issue issue : issueList) {
+            if(issue.getFields()==null){
+                continue;
+            }
+            String key = issue.getFields().getProject().getKey();
+            if(!projectMap.containsKey(key)){
+                projectMap.put(key,issue.getFields().getProject().getName());
+            }
+            Double estimate = issue.getFields().getCustomfield_10006();
+            totalScore += estimate;
+            if (estimateMap.containsKey(username+"_"+key)) {
+                Double temp = estimateMap.get(username+"_"+key);
+                estimate = temp + estimate;
+                estimateMap.put(username+"_"+key, estimate);
+            } else {
+                estimateMap.put(username+"_"+key, estimate);
+            }
+        }
+        userTotalScoreMap.put(username,totalScore);//用户总分
+        resultMap.put(username,estimateMap);
+    }
+
+    private String getHtml( Map<String,Map<String,Double>> map,Map<String,String> assigneeMap,Map<String,String> projectMap,Map<String,Double> userTotalScoreMap,Map<String,Double> projectTotalScoreMap){
 
         StringBuffer buffer = new StringBuffer();
 
@@ -349,7 +374,7 @@ public class IssueKpiRestResource {
                     "        </td>\n" +
                     "        <td width=\"20%\" nowrap class=\"assignee\">总分\n" +
                     "        </td>\n" +
-                    "        <td width=\"20%\" nowrap class=\"last-updated\">-\n" +
+                    "        <td width=\"20%\" nowrap class=\"last-updated\">"+userTotalScoreMap.get(user)+"\n" +
                     "        </td>\n" +
                     "        <td width=\"15%\" nowrap class=\"last-updated\">-\n" +
                     "        </td>\n" +
