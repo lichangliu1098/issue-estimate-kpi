@@ -36,7 +36,7 @@ public class JiraAPIUtil {
   
     static String uri = "https://jira.jiagouyun.com";
     static String user = "lichangliu";
-    static String pwd = "Hello1234";
+    static String pwd = "18516606844.z";
     static String osname = System.getProperty("os.name").toLowerCase();  
   
     /** 
